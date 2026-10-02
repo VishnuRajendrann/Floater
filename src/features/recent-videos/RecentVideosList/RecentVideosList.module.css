@@ -1,10 +1,13 @@
 .section {
   margin-top: var(--space-xl);
   text-align: left;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .header {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-md);
@@ -36,12 +39,23 @@
   padding: 0;
   display: grid;
   gap: var(--space-sm);
+  min-width: 0;
+  max-width: 100%;
+}
+
+.list > li {
+  min-width: 0;
+  max-width: 100%;
 }
 
 .item {
   display: flex;
   gap: var(--space-md);
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  overflow: hidden;
   padding: var(--space-sm);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
@@ -55,8 +69,9 @@
 }
 
 .thumb {
-  width: 120px;
-  height: 68px;
+  width: min(120px, 35vw);
+  height: auto;
+  aspect-ratio: 16 / 9;
   object-fit: cover;
   border-radius: var(--radius-md);
   flex-shrink: 0;

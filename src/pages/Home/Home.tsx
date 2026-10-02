@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { useApp } from "../../app/providers/AppProvider";
+import { AlwaysOnTopToggle } from "../../features/preferences/AlwaysOnTopToggle";
 import { ThemeToggle } from "../../features/preferences/ThemeToggle";
 import { RecentVideosList } from "../../features/recent-videos/RecentVideosList";
 import { UrlInputForm } from "../../features/url-input/UrlInputForm";
@@ -28,7 +29,10 @@ export function Home() {
       <div className={styles.card}>
         <div className={styles.cardHeader}>
           <h1 className={styles.title}>Floater</h1>
-          <ThemeToggle />
+          <div className={styles.headerControls}>
+            <AlwaysOnTopToggle />
+            <ThemeToggle />
+          </div>
         </div>
         <p className={styles.subtitle}>
           Paste a YouTube link for a focused desktop viewing experience.

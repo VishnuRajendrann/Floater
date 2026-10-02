@@ -1,7 +1,9 @@
 import type { RefObject } from "react";
 import { usePlayerMeta } from "../../../../state/player/playerContext";
+import { CaptionsToggle } from "../../controls/CaptionsToggle";
 import { FullscreenButton } from "../../controls/FullscreenButton";
 import { MuteButton } from "../../controls/MuteButton";
+import { PlayerSettingsMenu } from "../../controls/PlayerSettingsMenu";
 import { PlayPauseButton } from "../../controls/PlayPauseButton";
 import { SeekBar } from "../../controls/SeekBar";
 import { TimeDisplay } from "../../controls/TimeDisplay";
@@ -41,6 +43,8 @@ export function ControlBar({
       <SeekBar disabled={disabled} />
       <VolumeSlider disabled={disabled} />
       <MuteButton disabled={disabled} />
+      <CaptionsToggle disabled={disabled} />
+      <PlayerSettingsMenu disabled={disabled} />
       <FullscreenButton shellRef={shellRef} disabled={disabled} />
     </div>
   );

@@ -13,6 +13,20 @@ body,
   margin: 0;
 }
 
+#root {
+  border-radius: var(--window-radius);
+  overflow: hidden;
+  background: var(--color-bg);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+#root main {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
 body {
   font-family: var(--font-sans);
   background: var(--color-bg);

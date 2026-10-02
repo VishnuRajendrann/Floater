@@ -1,5 +1,9 @@
 import { clampNumber, safeParseJson } from "./storageUtils";
 
+export const MIN_WINDOW_WIDTH = 200;
+export const MIN_WINDOW_HEIGHT = 100;
+export const MAX_WINDOW_SIZE = 4096;
+
 export const PREFERENCES_STORAGE_KEY = "floater.preferences.v1";
 
 export type ThemePreference = "dark" | "light" | "system";
@@ -16,6 +20,7 @@ export type PreferencesV1 = {
   volume: number;
   muted: boolean;
   theme: ThemePreference;
+  alwaysOnTop: boolean;
   window?: WindowBoundsPreference;
 };
 
@@ -24,6 +29,7 @@ export const DEFAULT_PREFERENCES: PreferencesV1 = {
   volume: 100,
   muted: false,
   theme: "system",
+  alwaysOnTop: false,
 };
 
 function normalizePreferences(raw: unknown): PreferencesV1 {
@@ -36,8 +42,18 @@ function normalizePreferences(raw: unknown): PreferencesV1 {
     typeof data.window.width === "number" &&
     typeof data.window.height === "number"
       ? {
-          width: clampNumber(data.window.width, 640, 4096, 960),
-          height: clampNumber(data.window.height, 480, 4096, 640),
+          width: clampNumber(
+            data.window.width,
+            MIN_WINDOW_WIDTH,
+            MAX_WINDOW_SIZE,
+            960,
+          ),
+          height: clampNumber(
+            data.window.height,
+            MIN_WINDOW_HEIGHT,
+            MAX_WINDOW_SIZE,
+            640,
+          ),
           ...(typeof data.window.x === "number" ? { x: data.window.x } : {}),
           ...(typeof data.window.y === "number" ? { y: data.window.y } : {}),
         }
@@ -53,6 +69,8 @@ function normalizePreferences(raw: unknown): PreferencesV1 {
     volume: clampNumber(data.volume, 0, 100, DEFAULT_PREFERENCES.volume),
     muted: typeof data.muted === "boolean" ? data.muted : DEFAULT_PREFERENCES.muted,
     theme,
+    alwaysOnTop:
+      typeof data.alwaysOnTop === "boolean" ? data.alwaysOnTop : false,
     ...(window ? { window } : {}),
   };
 }

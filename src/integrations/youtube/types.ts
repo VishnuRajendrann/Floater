@@ -21,6 +21,15 @@ export type YoutubePlayerInstance = {
   getCurrentTime: () => number;
   getDuration: () => number;
   getPlayerState: () => number;
+  getPlaybackRate?: () => number;
+  setPlaybackRate?: (rate: number) => void;
+  getAvailablePlaybackRates?: () => number[];
+  getPlaybackQuality?: () => string;
+  setPlaybackQuality?: (quality: string) => void;
+  getAvailableQualityLevels?: () => string[];
+  loadModule?: (moduleName: string) => void;
+  getOption?: (module: string, option: string) => unknown;
+  setOption?: (module: string, option: string, value: unknown) => void;
   destroy: () => void;
 };
 
