@@ -1,9 +1,10 @@
 # Dependencies
 node_modules/
+dist/
 
 # Build
-dist/
 src-tauri/target/
+src-tauri/gen/
 
 # Logs
 *.log
@@ -22,3 +23,6 @@ Thumbs.db
 
 # Tauri
 src-tauri/WixTools/
+# Generated from public/assets/icons/icon.svg via `npm run icons`
+src-tauri/icons/**
+!src-tauri/icons/README.md
