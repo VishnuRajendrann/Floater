@@ -36,4 +36,14 @@ describe("playerReducer", () => {
     expect(next.loadPhase).toBe("error");
     expect(next.error?.code).toBe("VIDEO_NOT_FOUND");
   });
+
+  it("retries while keeping video id", () => {
+    const errored = playerReducer(
+      { ...initialPlayerState, videoId: "abc", loadGeneration: 2, loadPhase: "error" },
+      { type: "RETRY" },
+    );
+    expect(errored.loadPhase).toBe("loadingApi");
+    expect(errored.videoId).toBe("abc");
+    expect(errored.loadGeneration).toBe(3);
+  });
 });

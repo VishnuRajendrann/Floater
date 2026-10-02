@@ -1,33 +1,52 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { loadIframeApi } from "../../../integrations/youtube/loadIframeApi";
+import {
+  loadIframeApi,
+  resetIframeApiLoadState,
+} from "../../../integrations/youtube/loadIframeApi";
 import { YoutubePlayerAdapter } from "../../../integrations/youtube/YoutubePlayerAdapter";
 import { mapYoutubeErrorCode } from "../../../integrations/youtube/mapYoutubeErrorCode";
 import { createAppError } from "../../../types/errors";
-import { usePlayer } from "../../../state/player/playerContext";
+import { loadPreferences } from "../../../storage/preferencesStore";
+import { usePlayerDispatch, usePlayerMeta } from "../../../state/player/playerContext";
 import { usePlayerCommandsRef } from "../context/PlayerCommandsContext";
+import { usePreferences } from "../../../state/preferences/preferencesContext";
 import { YT_PLAYER_STATE } from "../../../integrations/youtube/types";
 
 const POLL_MS = 500;
 
 export function useYoutubePlayer(videoId: string | null) {
-  const { dispatch } = usePlayer();
+  const { loadGeneration } = usePlayerMeta();
+  const dispatch = usePlayerDispatch();
+  const { preferences, setVolume: persistVolume, setMuted: persistMuted } =
+    usePreferences();
   const commandsRef = usePlayerCommandsRef();
   const [mount, setMount] = useState<HTMLDivElement | null>(null);
   const adapterRef = useRef<YoutubePlayerAdapter | null>(null);
   const pollRef = useRef<number | null>(null);
+  const effectIdRef = useRef(0);
+  const prefsRef = useRef(preferences);
+  useEffect(() => {
+    prefsRef.current = preferences;
+  }, [preferences]);
 
   const mountRef = useCallback((node: HTMLDivElement | null) => {
     setMount(node);
   }, []);
 
   useEffect(() => {
+    if (!videoId) {
+      return;
+    }
+    dispatch({ type: "LOAD_STARTED", videoId });
+  }, [videoId, dispatch]);
+
+  useEffect(() => {
     if (!videoId || !mount) {
       return;
     }
 
+    const effectId = ++effectIdRef.current;
     let cancelled = false;
-
-    dispatch({ type: "LOAD_STARTED", videoId });
 
     const stopPoll = () => {
       if (pollRef.current !== null) {
@@ -36,11 +55,13 @@ export function useYoutubePlayer(videoId: string | null) {
       }
     };
 
+    const isActive = () => !cancelled && effectIdRef.current === effectId;
+
     const startPoll = () => {
       stopPoll();
       pollRef.current = window.setInterval(() => {
         const adapter = adapterRef.current;
-        if (!adapter) {
+        if (!adapter || !isActive()) {
           return;
         }
         dispatch({
@@ -54,27 +75,39 @@ export function useYoutubePlayer(videoId: string | null) {
     void (async () => {
       try {
         await loadIframeApi();
-        if (cancelled) {
+        if (!isActive()) {
           return;
         }
         dispatch({ type: "API_LOADED" });
 
         const adapter = new YoutubePlayerAdapter(mount, {
           onReady: () => {
-            if (cancelled || !adapterRef.current) {
+            if (!isActive() || !adapterRef.current) {
               return;
             }
+            const prefs = prefsRef.current ?? loadPreferences();
+            const targetVolume = prefs.muted ? 0 : prefs.volume;
+            adapterRef.current.setVolume(targetVolume);
+            if (prefs.muted) {
+              adapterRef.current.mute();
+            } else {
+              adapterRef.current.unmute();
+            }
+
             const duration = adapterRef.current.getDuration();
             const muted = adapterRef.current.isMuted();
             dispatch({
               type: "PLAYER_READY",
               duration: Number.isFinite(duration) ? duration : 0,
-              volume: 100,
+              volume: prefs.muted ? 0 : prefs.volume,
               muted,
             });
             startPoll();
           },
           onStateChange: (state) => {
+            if (!isActive()) {
+              return;
+            }
             dispatch({ type: "YT_STATE_CHANGE", ytState: state });
             if (state === YT_PLAYER_STATE.PLAYING) {
               startPoll();
@@ -95,6 +128,9 @@ export function useYoutubePlayer(videoId: string | null) {
             }
           },
           onError: (code) => {
+            if (!isActive()) {
+              return;
+            }
             stopPoll();
             dispatch({ type: "PLAYER_ERROR", error: mapYoutubeErrorCode(code) });
           },
@@ -105,20 +141,26 @@ export function useYoutubePlayer(videoId: string | null) {
           play: () => adapter.play(),
           pause: () => adapter.pause(),
           seekTo: (seconds) => adapter.seekTo(seconds, true),
-          setVolume: (volume) => adapter.setVolume(volume),
+          setVolume: (volume) => {
+            adapter.setVolume(volume);
+            persistVolume(volume);
+          },
           toggleMute: () => {
             if (adapter.isMuted()) {
               adapter.unmute();
               dispatch({ type: "SET_MUTED", muted: false });
+              persistMuted(false);
             } else {
               adapter.mute();
               dispatch({ type: "SET_MUTED", muted: true });
+              persistMuted(true);
             }
           },
         };
         adapter.create(videoId);
       } catch (error) {
-        if (!cancelled) {
+        if (isActive()) {
+          resetIframeApiLoadState();
           dispatch({
             type: "PLAYER_ERROR",
             error: createAppError(
@@ -138,7 +180,15 @@ export function useYoutubePlayer(videoId: string | null) {
       commandsRef.current = null;
       mount.replaceChildren();
     };
-  }, [videoId, mount, dispatch, commandsRef]);
+  }, [
+    videoId,
+    mount,
+    loadGeneration,
+    dispatch,
+    commandsRef,
+    persistVolume,
+    persistMuted,
+  ]);
 
   return mountRef;
 }

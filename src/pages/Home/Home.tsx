@@ -1,8 +1,11 @@
 import { useState, type FormEvent } from "react";
 import { useApp } from "../../app/providers/AppProvider";
+import { ThemeToggle } from "../../features/preferences/ThemeToggle";
+import { RecentVideosList } from "../../features/recent-videos/RecentVideosList";
 import { UrlInputForm } from "../../features/url-input/UrlInputForm";
 import { parseYoutubeUrl } from "../../integrations/youtube/parseYoutubeUrl";
 import { parseFailureToAppError } from "../../integrations/youtube/mapYoutubeErrorCode";
+import { resetLocalData } from "../../storage/resetLocalData";
 import type { AppError } from "../../types/errors";
 import styles from "./Home.module.css";
 
@@ -17,23 +20,44 @@ export function Home() {
       return;
     }
     setError(null);
-    loadVideo(result.videoId);
-  };
-
-  const handleForm = (event: FormEvent) => {
-    event.preventDefault();
+    loadVideo(result.videoId, url.trim());
   };
 
   return (
     <main className={styles.page}>
       <div className={styles.card}>
-        <h1 className={styles.title}>Floater</h1>
+        <div className={styles.cardHeader}>
+          <h1 className={styles.title}>Floater</h1>
+          <ThemeToggle />
+        </div>
         <p className={styles.subtitle}>
           Paste a YouTube link for a focused desktop viewing experience.
         </p>
-        <form onSubmit={handleForm}>
+        <form
+          onSubmit={(event: FormEvent) => {
+            event.preventDefault();
+          }}
+        >
           <UrlInputForm onSubmit={handleSubmit} error={error} />
         </form>
+        <RecentVideosList />
+        <p className={styles.privacy}>History and preferences stay on this device.</p>
+        <button
+          type="button"
+          className={styles.reset}
+          onClick={() => {
+            if (
+              window.confirm(
+                "Reset preferences and recent videos stored on this device?",
+              )
+            ) {
+              resetLocalData();
+              window.location.reload();
+            }
+          }}
+        >
+          Reset local data
+        </button>
       </div>
     </main>
   );

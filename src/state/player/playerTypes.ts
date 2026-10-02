@@ -10,6 +10,7 @@ export type LoadPhase =
 export type PlayerModel = {
   loadPhase: LoadPhase;
   videoId: string | null;
+  loadGeneration: number;
   ytState: number | null;
   currentTime: number;
   duration: number;
@@ -23,6 +24,7 @@ export type PlayerModel = {
 export const initialPlayerState: PlayerModel = {
   loadPhase: "idle",
   videoId: null,
+  loadGeneration: 0,
   ytState: null,
   currentTime: 0,
   duration: 0,
@@ -45,6 +47,7 @@ export type PlayerAction =
   | { type: "SET_MUTED"; muted: boolean }
   | { type: "SET_FULLSCREEN"; isFullscreen: boolean }
   | { type: "PLAYER_ERROR"; error: AppError }
+  | { type: "RETRY" }
   | { type: "RESET" };
 
 export function playerReducer(
@@ -57,6 +60,7 @@ export function playerReducer(
         ...initialPlayerState,
         loadPhase: "loadingApi",
         videoId: action.videoId,
+        loadGeneration: 0,
       };
     case "API_LOADED":
       return { ...state, loadPhase: "loadingPlayer" };
@@ -98,6 +102,16 @@ export function playerReducer(
         ...state,
         loadPhase: "error",
         error: action.error,
+      };
+    case "RETRY":
+      if (!state.videoId) {
+        return state;
+      }
+      return {
+        ...initialPlayerState,
+        loadPhase: "loadingApi",
+        videoId: state.videoId,
+        loadGeneration: state.loadGeneration + 1,
       };
     case "RESET":
       return initialPlayerState;

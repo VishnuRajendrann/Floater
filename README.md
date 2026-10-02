@@ -35,14 +35,34 @@ Paste a YouTube URL on the home screen to open the player.
 - **`main`** — stable releases
 - **`develop`** — integration branch; feature work branches off `develop`
 
+## Install
+
+Build a Windows installer:
+
+```bash
+npm run tauri:build
+```
+
+The NSIS setup is written under `src-tauri/target/release/bundle/nsis/`. Installing it is the release check. Development (`npm run tauri:dev`) and the browser (`npm run dev` on port 5173) do not use the production localhost origin (`http://localhost:17352`).
+
 ## YouTube / Premium
 
 Floater uses the official [YouTube IFrame Player API](https://developers.google.com/youtube/iframe_api_reference). It does **not** bypass ads, DRM, or authentication.
 
-- Premium ad-free playback is **not guaranteed** in Phase 1 (no sign-in flow).
+- Premium or ad-free playback is **not guaranteed**. Floater does not sign you in.
 - Some videos cannot be embedded (owner restriction).
 
-See [`docs/phase1/youtube-webview-spike.md`](docs/phase1/youtube-webview-spike.md) for WebView2 Referer/origin notes.
+See [`docs/phase1/youtube-webview-spike.md`](docs/phase1/youtube-webview-spike.md) and [`docs/phase3/release-qa.md`](docs/phase3/release-qa.md).
+
+## Privacy
+
+See [`docs/privacy.md`](docs/privacy.md). Preferences and recent videos stay on this device. Use **Reset local data** on the home screen to clear them.
+
+Release storage is tied to `http://localhost:17352`. Browser dev storage on port 5173 is separate. If port 17352 is already taken, Floater picks another port and local data will not match the usual origin.
+
+## Status
+
+**v1.0** — Windows desktop player. See [`CHANGELOG.md`](CHANGELOG.md).
 
 ## Assets
 
@@ -53,11 +73,11 @@ See [`docs/folder-structure.md`](docs/folder-structure.md) for the full project 
 
 ## Keyboard (player)
 
+Shortcuts are disabled while typing in text fields.
+
 - **Space** — play / pause
-- **F** — fullscreen
-- **M** — mute
+- **F** — fullscreen (player area)
+- **M** — mute / unmute
 - **← / →** — seek ±5s
 
-## Status
-
-Phase 1 MVP — desktop shell, URL input, embed player, custom controls.
+Use **Shortcuts** on the player screen for the full list.

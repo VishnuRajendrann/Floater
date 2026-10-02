@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import type { RefObject } from "react";
-import { usePlayer } from "../../../../state/player/playerContext";
+import { usePlayerDispatch, usePlayerMeta } from "../../../../state/player/playerContext";
+import { IconFullscreen, IconFullscreenExit } from "../PlayerIcons";
 import styles from "./FullscreenButton.module.css";
 
 type Props = {
@@ -9,7 +10,8 @@ type Props = {
 };
 
 export function FullscreenButton({ shellRef, disabled }: Props) {
-  const { state, dispatch } = usePlayer();
+  const { isFullscreen } = usePlayerMeta();
+  const dispatch = usePlayerDispatch();
 
   useEffect(() => {
     const onChange = () => {
@@ -39,10 +41,11 @@ export function FullscreenButton({ shellRef, disabled }: Props) {
       type="button"
       className={styles.button}
       disabled={disabled}
-      aria-label={state.isFullscreen ? "Exit fullscreen" : "Fullscreen"}
+      aria-label={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
+      title={isFullscreen ? "Exit fullscreen (F)" : "Fullscreen (F)"}
       onClick={() => void toggle()}
     >
-      ⛶
+      {isFullscreen ? <IconFullscreenExit /> : <IconFullscreen />}
     </button>
   );
 }

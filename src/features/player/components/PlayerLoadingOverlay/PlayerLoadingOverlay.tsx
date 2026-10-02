@@ -1,19 +1,24 @@
-import { usePlayer } from "../../../../state/player/playerContext";
+import { usePlayerMeta } from "../../../../state/player/playerContext";
 import styles from "./PlayerLoadingOverlay.module.css";
 
 export function PlayerLoadingOverlay() {
-  const { state } = usePlayer();
+  const { loadPhase } = usePlayerMeta();
   const visible =
-    state.loadPhase === "loadingApi" || state.loadPhase === "loadingPlayer";
+    loadPhase === "loadingApi" || loadPhase === "loadingPlayer";
 
   if (!visible) {
     return null;
   }
 
+  const message =
+    loadPhase === "loadingApi"
+      ? "Connecting to YouTube…"
+      : "Preparing video…";
+
   return (
     <div className={styles.overlay} aria-live="polite">
       <div className={styles.spinner} />
-      <p>Loading player…</p>
+      <p>{message}</p>
     </div>
   );
 }

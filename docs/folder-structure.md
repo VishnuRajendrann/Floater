@@ -24,8 +24,11 @@ Floater/
 │   │   └── url-input/
 │   ├── integrations/          # External systems (YouTube IFrame API)
 │   │   └── youtube/
-│   ├── state/                 # Reducers + React context
-│   │   └── player/
+│   ├── storage/               # Versioned localStorage helpers
+│   ├── keyboard/              # Shortcut registry + input guards
+│   ├── state/
+│   │   ├── player/
+│   │   └── preferences/
 │   ├── styles/                # Global CSS + design tokens
 │   ├── types/                 # Shared TypeScript types
 │   ├── utils/                 # Pure helpers (no React)

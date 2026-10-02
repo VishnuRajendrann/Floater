@@ -16,7 +16,7 @@ Confirm Floater can load and control the YouTube IFrame Player inside Tauri 2 on
 |------|-------------|--------|
 | `npm run dev` (browser) | `http://localhost:5173` | Baseline |
 | `npm run tauri dev` | `http://localhost:5173` | Vite dev URL from Tauri config |
-| `npm run tauri build` (release) | `http://localhost:{port}` | **Production uses [`tauri-plugin-localhost`](https://v2.tauri.app/plugin/localhost/)** so the webview is not stuck on `tauri://localhost`, which triggers YouTube **Error 153** (missing HTTP Referer) per [IFrame API docs](https://developers.google.com/youtube/iframe_api_reference) and [Tauri #14422](https://github.com/tauri-apps/tauri/issues/14422). |
+| `npm run tauri build` (release) | `http://localhost:17352` (fallback: ephemeral port if 17352 is taken) | **Production uses [`tauri-plugin-localhost`](https://v2.tauri.app/plugin/localhost/)** so the webview is not stuck on `tauri://localhost`, which triggers YouTube **Error 153** (missing HTTP Referer) per [IFrame API docs](https://developers.google.com/youtube/iframe_api_reference) and [Tauri #14422](https://github.com/tauri-apps/tauri/issues/14422). A **stable default port** keeps `localStorage` (preferences, recent videos) across restarts. |
 
 ## Implementation choice
 
@@ -51,7 +51,7 @@ Phase 1 does **not** implement sign-in. Premium benefits apply only if YouTube r
 
 ## Spike status
 
-- [ ] Verified in `tauri dev` on Windows
-- [ ] Verified in release build on Windows
+- [x] Verified in `tauri dev` on Windows
+- [ ] Verified in release build on Windows (installer QA: [`docs/phase3/release-qa.md`](../phase3/release-qa.md))
 
 _Check these boxes during manual QA on the target machine._
