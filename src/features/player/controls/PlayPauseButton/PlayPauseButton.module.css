@@ -1,0 +1,20 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: none;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: rgb(255 255 255 / 0.9);
+}
+
+.button:hover:not(:disabled) {
+  background: rgb(255 255 255 / 0.1);
+}
+
+.button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

@@ -1,0 +1,68 @@
+.page {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 1px solid var(--color-border);
+  position: relative;
+  z-index: 5;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  position: relative;
+}
+
+.brand {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.linkButton {
+  border: none;
+  background: transparent;
+  color: var(--color-accent);
+  padding: var(--space-xs) var(--space-sm);
+}
+
+.linkButton:hover {
+  color: var(--color-accent-hover);
+}
+
+.shell {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: #000;
+}
+
+.shell:fullscreen {
+  background: #000;
+}
+
+.shell:fullscreen .videoArea {
+  max-height: 100%;
+}
+
+.videoArea {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 16 / 9;
+  max-height: calc(100% - var(--control-bar-height));
+  margin: 0 auto;
+  width: 100%;
+}
