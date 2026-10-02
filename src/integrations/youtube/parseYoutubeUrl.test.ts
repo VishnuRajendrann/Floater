@@ -41,4 +41,22 @@ describe("parseYoutubeUrl", () => {
     const result = parseYoutubeUrl("https://youtu.be/too-short");
     expect(result).toEqual({ ok: false, code: "INVALID_VIDEO_ID" });
   });
+
+  it("rejects non-http protocols", () => {
+    expect(parseYoutubeUrl("javascript:alert(1)")).toEqual({
+      ok: false,
+      code: "INVALID_URL",
+    });
+  });
+
+  it("rejects lookalike hosts", () => {
+    expect(
+      parseYoutubeUrl("https://youtube.com.evil.com/watch?v=dQw4w9WgXcQ"),
+    ).toEqual({ ok: false, code: "UNSUPPORTED_HOST" });
+  });
+
+  it("rejects oversized input", () => {
+    const huge = `https://www.youtube.com/watch?v=dQw4w9WgXcQ&q=${"a".repeat(3000)}`;
+    expect(parseYoutubeUrl(huge).ok).toBe(false);
+  });
 });

@@ -64,3 +64,8 @@ export function loadIframeApi(): Promise<void> {
 
   return loadPromise;
 }
+
+/** Allows a failed load attempt to be retried (e.g. after network error). */
+export function resetIframeApiLoadState(): void {
+  loadPromise = null;
+}

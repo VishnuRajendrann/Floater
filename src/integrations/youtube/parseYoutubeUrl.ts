@@ -12,6 +12,7 @@ export type ParseFailure = { ok: false; code: ParseFailureCode };
 export type ParseResult = ParseSuccess | ParseFailure;
 
 const VIDEO_ID_PATTERN = /^[A-Za-z0-9_-]{11}$/;
+export const MAX_URL_INPUT_LENGTH = 2048;
 
 function isValidVideoId(id: string): boolean {
   return VIDEO_ID_PATTERN.test(id);
@@ -44,6 +45,9 @@ export function parseYoutubeUrl(raw: string): ParseResult {
   const input = normalizeRawUrlInput(raw);
   if (!input) {
     return { ok: false, code: "EMPTY" };
+  }
+  if (input.length > MAX_URL_INPUT_LENGTH) {
+    return { ok: false, code: "INVALID_URL" };
   }
 
   let url: URL;

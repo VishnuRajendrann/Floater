@@ -1,12 +1,12 @@
-import { usePlayer } from "../../../../state/player/playerContext";
+import { usePlayerProgress } from "../../../../state/player/playerContext";
 import { formatTime } from "../../../../utils/formatTime";
 import styles from "./TimeDisplay.module.css";
 
 export function TimeDisplay() {
-  const { state } = usePlayer();
+  const { currentTime, duration } = usePlayerProgress();
   return (
     <span className={styles.time}>
-      {formatTime(state.currentTime)} / {formatTime(state.duration)}
+      {formatTime(currentTime)} / {formatTime(duration)}
     </span>
   );
 }

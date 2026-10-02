@@ -47,3 +47,39 @@ export function createAppError(
     ...(debug ? { debug } : {}),
   };
 }
+
+const RETRYABLE_CODES: ReadonlySet<AppErrorCode> = new Set([
+  "API_LOAD_FAILED",
+  "PLAYER_INIT_FAILED",
+  "HTML5_ERROR",
+  "UNKNOWN",
+]);
+
+export function isRetryableError(code: AppErrorCode): boolean {
+  return RETRYABLE_CODES.has(code);
+}
+
+export function errorCategoryHeadline(code: AppErrorCode): string {
+  switch (code) {
+    case "EMPTY_INPUT":
+    case "INVALID_URL":
+    case "UNSUPPORTED_HOST":
+    case "MISSING_VIDEO_ID":
+    case "INVALID_VIDEO_ID":
+    case "INVALID_PARAMETER":
+      return "Check the link";
+    case "VIDEO_NOT_FOUND":
+      return "Video unavailable";
+    case "EMBED_NOT_ALLOWED":
+      return "Cannot play here";
+    case "API_LOAD_FAILED":
+    case "HTML5_ERROR":
+      return "Connection problem";
+    case "REFERRER_CONFIG":
+      return "Player configuration";
+    case "PLAYER_INIT_FAILED":
+      return "Player failed to start";
+    default:
+      return "Something went wrong";
+  }
+}

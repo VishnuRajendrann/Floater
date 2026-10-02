@@ -1,9 +1,21 @@
 .button {
-  width: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
   border: none;
   border-radius: var(--radius-md);
   background: transparent;
-  color: var(--color-text-muted);
+  color: rgb(255 255 255 / 0.85);
+}
+
+.button:hover:not(:disabled) {
+  background: rgb(255 255 255 / 0.1);
+}
+
+.active {
+  color: var(--color-accent);
 }
 
 .button:disabled {

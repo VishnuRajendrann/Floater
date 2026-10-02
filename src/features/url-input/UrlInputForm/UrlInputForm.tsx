@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { KeyboardEvent } from "react";
 import type { AppError } from "../../../types/errors";
 import styles from "./UrlInputForm.module.css";
 
@@ -9,6 +10,17 @@ type Props = {
 
 export function UrlInputForm({ onSubmit, error }: Props) {
   const [value, setValue] = useState("");
+
+  const submit = () => {
+    onSubmit(value.trim());
+  };
+
+  const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      submit();
+    }
+  };
 
   return (
     <div className={styles.wrap}>
@@ -24,14 +36,11 @@ export function UrlInputForm({ onSubmit, error }: Props) {
           placeholder="https://www.youtube.com/watch?v=..."
           value={value}
           onChange={(event) => setValue(event.target.value)}
+          onKeyDown={onKeyDown}
           autoComplete="off"
           spellCheck={false}
         />
-        <button
-          type="button"
-          className={styles.button}
-          onClick={() => onSubmit(value)}
-        >
+        <button type="button" className={styles.button} onClick={submit}>
           Load
         </button>
       </div>
