@@ -1,0 +1,11 @@
+.button {
+  width: 2rem;
+  border: none;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text-muted);
+}
+
+.button:disabled {
+  opacity: 0.4;
+}
