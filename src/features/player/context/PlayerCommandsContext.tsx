@@ -14,6 +14,7 @@ export type PlayerCommands = {
   setVolume: (volume: number) => void;
   toggleMute: () => void;
   toggleCaptions: () => boolean;
+  setCaptions: (enabled: boolean) => void;
   areCaptionsEnabled: () => boolean;
   getPlaybackRate: () => number;
   setPlaybackRate: (rate: number) => void;
@@ -54,6 +55,7 @@ export function usePlayerCommands(): PlayerCommands {
       setVolume: (volume) => ref.current?.setVolume(volume),
       toggleMute: () => ref.current?.toggleMute(),
       toggleCaptions: () => ref.current?.toggleCaptions() ?? false,
+      setCaptions: (enabled) => ref.current?.setCaptions(enabled),
       areCaptionsEnabled: () => ref.current?.areCaptionsEnabled() ?? false,
       getPlaybackRate: () => ref.current?.getPlaybackRate() ?? 1,
       setPlaybackRate: (rate) => ref.current?.setPlaybackRate(rate),

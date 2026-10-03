@@ -146,7 +146,7 @@ async function isWindowOnAnyMonitor(): Promise<boolean> {
 
 
 
-/** Show, unminimize, restore title bar, and center if saved bounds are off-screen. */
+/** Show, unminimize, keep the borderless rounded frame, and center if saved bounds are off-screen. */
 
 export async function ensureWindowVisible(): Promise<void> {
 
@@ -168,7 +168,8 @@ export async function ensureWindowVisible(): Promise<void> {
 
     }
 
-    await appWindow.setDecorations(true);
+    await appWindow.setDecorations(false);
+    await appWindow.setShadow(true);
 
     if (!(await isWindowOnAnyMonitor())) {
 
@@ -259,14 +260,14 @@ export async function readNativeAlwaysOnTop(): Promise<boolean | null> {
 
 
 export async function setWindowDecorations(enabled: boolean): Promise<void> {
+  void enabled;
   if (!isTauri()) {
     return;
   }
   const appWindow = getCurrentWindow();
-  await appWindow.setDecorations(enabled);
+  await appWindow.setDecorations(false);
   try {
-    // Borderless + shadow on Windows 11 yields slightly rounded native corners.
-    await appWindow.setShadow(!enabled);
+    await appWindow.setShadow(true);
   } catch {
     // Optional; browser dev has no native shadow.
   }

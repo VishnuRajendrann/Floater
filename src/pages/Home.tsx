@@ -27,10 +27,13 @@ export function Home() {
     <main className="box-border flex h-full flex-col items-center overflow-x-hidden overflow-y-auto p-[clamp(var(--space-sm),3vw,var(--space-xl))]">
       <div className="my-auto box-border w-full min-w-0 max-w-lg shrink-0 overflow-x-hidden rounded-lg border border-border bg-surface p-[clamp(var(--space-md),4vw,var(--space-xl))] shadow-[0_12px_40px_rgb(0_0_0/0.25)]">
         <div className="mb-[var(--space-sm)] flex items-start justify-between gap-[var(--space-md)]">
-          <h1 className="m-0 text-[clamp(1.5rem,5vw,2rem)] font-bold tracking-tight">
+          <h1
+            className="m-0 text-[clamp(1.5rem,5vw,2rem)] font-bold tracking-tight"
+            data-tauri-drag-region
+          >
             Floater
           </h1>
-          <div className="flex flex-wrap justify-end gap-[var(--space-sm)]">
+          <div className="tauri-no-drag flex flex-wrap justify-end gap-[var(--space-sm)]">
             <AlwaysOnTopToggle />
             <ThemeToggle />
           </div>
