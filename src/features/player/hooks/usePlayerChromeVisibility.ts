@@ -1,0 +1,63 @@
+import { useCallback, useEffect, useState } from "react";
+import {
+  ensureWindowVisible,
+  reapplyPlayerWindowSize,
+  setWindowDecorations,
+  togglePlayerWindowSize,
+} from "../../../integrations/tauri/windowPrefs";
+
+export function usePlayerChromeVisibility() {
+  const [controlsVisible, setControlsVisible] = useState(false);
+  const [revealerVisible, setRevealerVisible] = useState(false);
+
+  const applyDecorations = useCallback(async (visible: boolean) => {
+    try {
+      if (!visible) {
+        await ensureWindowVisible();
+      }
+      await setWindowDecorations(visible);
+    } catch {
+      // Best-effort; browser dev has no native decorations.
+    }
+  }, []);
+
+  useEffect(() => {
+    applyDecorations(false);
+    return () => {
+      void ensureWindowVisible();
+    };
+  }, [applyDecorations]);
+
+  const toggleControls = useCallback(() => {
+    setControlsVisible((prev) => {
+      const next = !prev;
+      void (async () => {
+        await togglePlayerWindowSize();
+        await applyDecorations(next);
+        await reapplyPlayerWindowSize();
+      })();
+      return next;
+    });
+  }, [applyDecorations]);
+
+  const onShellPointerEnter = useCallback(() => {
+    setRevealerVisible(true);
+  }, []);
+
+  const onShellPointerLeave = useCallback(() => {
+    setRevealerVisible(false);
+  }, []);
+
+  const onRevealerPointerEnter = useCallback(() => {
+    setRevealerVisible(true);
+  }, []);
+
+  return {
+    controlsVisible,
+    revealerVisible,
+    toggleControls,
+    onShellPointerEnter,
+    onShellPointerLeave,
+    onRevealerPointerEnter,
+  };
+}

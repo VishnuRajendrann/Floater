@@ -1,0 +1,46 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Floater",
+  "version": "1.5.0",
+  "identifier": "com.vishnurajendrann.floater",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:5173",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "Floater",
+        "width": 512,
+        "height": 382,
+        "minWidth": 200,
+        "minHeight": 100,
+        "resizable": true,
+        "fullscreen": false
+      }
+    ],
+    "security": {
+      "csp": {
+        "default-src": "'self' asset:",
+        "script-src": "'self' https://www.youtube.com https://www.google.com https://s.ytimg.com",
+        "frame-src": "https://www.youtube.com https://www.youtube-nocookie.com",
+        "img-src": "'self' asset: data: blob: https://i.ytimg.com https://s.ytimg.com https://www.youtube.com",
+        "style-src": "'self' 'unsafe-inline'",
+        "connect-src": "'self' ipc: http://ipc.localhost http://localhost:17352 https://www.youtube.com https://www.google.com"
+      }
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis"],
+    "icon": [
+      "icons/icon.ico",
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png"
+    ]
+  }
+}
