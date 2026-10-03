@@ -17,7 +17,8 @@ export function CaptionsToggle({ disabled }: Props) {
       aria-pressed={enabled}
       title={enabled ? "Captions on" : "Captions off"}
       onClick={() => {
-        const next = commands.toggleCaptions();
+        const next = !enabled;
+        commands.setCaptions(next);
         setEnabled(next);
       }}
     >

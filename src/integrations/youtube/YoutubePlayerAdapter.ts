@@ -3,6 +3,7 @@ import type { AdapterEvents, YoutubePlayerInstance } from "./types";
 
 export class YoutubePlayerAdapter {
   private player: YoutubePlayerInstance | null = null;
+  private captionsEnabled = false;
 
   constructor(
     private mount: HTMLElement,
@@ -86,28 +87,30 @@ export class YoutubePlayerAdapter {
   }
 
   areCaptionsEnabled(): boolean {
-    const track = this.player?.getOption?.("captions", "track");
-    if (!track || typeof track !== "object") {
-      return false;
+    return this.captionsEnabled;
+  }
+
+  setCaptionsEnabled(enabled: boolean): boolean {
+    const player = this.player;
+    this.captionsEnabled = enabled;
+    if (!player?.setOption) {
+      return this.captionsEnabled;
     }
-    return Object.keys(track as object).length > 0;
+    if (enabled) {
+      player.loadModule?.("captions");
+      player.setOption("captions", "track", {
+        languageCode: "en",
+        kind: "captions",
+      });
+      return true;
+    }
+    player.setOption("captions", "track", {});
+    player.unloadModule?.("captions");
+    return false;
   }
 
   toggleCaptions(): boolean {
-    this.prepareCaptionsModule();
-    const player = this.player;
-    if (!player?.setOption) {
-      return false;
-    }
-    if (this.areCaptionsEnabled()) {
-      player.setOption("captions", "track", {});
-      return false;
-    }
-    player.setOption("captions", "track", {
-      languageCode: "en",
-      kind: "captions",
-    });
-    return true;
+    return this.setCaptionsEnabled(!this.captionsEnabled);
   }
 
   getPlaybackRate(): number {
@@ -142,6 +145,7 @@ export class YoutubePlayerAdapter {
   }
 
   destroy(): void {
+    this.captionsEnabled = false;
     this.destroyPlayer();
   }
 }

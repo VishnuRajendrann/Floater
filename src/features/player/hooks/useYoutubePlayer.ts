@@ -158,6 +158,9 @@ export function useYoutubePlayer(videoId: string | null) {
             }
           },
           toggleCaptions: () => adapter.toggleCaptions(),
+          setCaptions: (enabled) => {
+            adapter.setCaptionsEnabled(enabled);
+          },
           areCaptionsEnabled: () => adapter.areCaptionsEnabled(),
           getPlaybackRate: () => adapter.getPlaybackRate(),
           setPlaybackRate: (rate) => adapter.setPlaybackRate(rate),
