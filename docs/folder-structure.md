@@ -5,7 +5,7 @@ Layered layout: **app shell → pages → features → shared / integrations / s
 ```
 Floater/
 ├── docs/
-├── public/assets/icons/       # Source SVG only
+├── public/assets/icons/       # Source logo PNG only
 ├── scripts/                   # prune-windows-icons.mjs
 ├── src/
 │   ├── app/                   # Shell, providers, routes

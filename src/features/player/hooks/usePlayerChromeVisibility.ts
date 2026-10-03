@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   ensureWindowVisible,
   setWindowDecorations,
@@ -7,7 +7,6 @@ import {
 export function usePlayerChromeVisibility() {
   const [controlsVisible, setControlsVisible] = useState(false);
   const [revealerVisible, setRevealerVisible] = useState(false);
-  const pointerInsideRef = useRef(false);
 
   const applyDecorations = useCallback((visible: boolean) => {
     void (async () => {
@@ -38,12 +37,10 @@ export function usePlayerChromeVisibility() {
   }, [applyDecorations]);
 
   const onShellPointerEnter = useCallback(() => {
-    pointerInsideRef.current = true;
     setRevealerVisible(true);
   }, []);
 
   const onShellPointerLeave = useCallback(() => {
-    pointerInsideRef.current = false;
     setRevealerVisible(false);
   }, []);
 

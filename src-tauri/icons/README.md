@@ -4,7 +4,7 @@
 
 They are produced from the source SVG:
 
-`public/assets/icons/icon.svg`
+`public/assets/icons/icon.png`
 
 Regenerate:
 
