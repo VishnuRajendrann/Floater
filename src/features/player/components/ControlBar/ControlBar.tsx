@@ -8,7 +8,7 @@ import { PlayPauseButton } from "../../controls/PlayPauseButton";
 import { SeekBar } from "../../controls/SeekBar";
 import { TimeDisplay } from "../../controls/TimeDisplay";
 import { VolumeSlider } from "../../controls/VolumeSlider";
-import styles from "./ControlBar.module.css";
+import { cn } from "../../../../lib/cn";
 
 type Props = {
   shellRef: RefObject<HTMLDivElement | null>;
@@ -32,7 +32,11 @@ export function ControlBar({
 
   return (
     <div
-      className={`${styles.bar} ${visible ? "" : styles.hidden}`}
+      className={cn(
+        "tauri-no-drag relative z-[25] flex min-h-[var(--control-bar-height)] shrink-0 flex-wrap items-center gap-[var(--space-sm)] border-t border-white/10 bg-gradient-to-t from-black/85 to-black/55 px-[var(--space-md)] transition-opacity duration-200 ease-out",
+        !visible &&
+          "pointer-events-none h-0 min-h-0 overflow-hidden border-t-0 p-0 opacity-0",
+      )}
       onPointerEnter={onPointerEnter}
       onPointerLeave={onPointerLeave}
       onPointerDown={onPointerDown}

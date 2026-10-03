@@ -12,7 +12,7 @@ import { PlayerErrorPanel } from "../../features/player/components/PlayerErrorPa
 import { PlayerLoadingOverlay } from "../../features/player/components/PlayerLoadingOverlay";
 import { YoutubePlayerHost } from "../../features/player/components/YoutubePlayerHost";
 import { usePlayerDispatch, usePlayerMeta } from "../../state/player/playerContext";
-import styles from "./Player.module.css";
+import { cn } from "../../lib/cn";
 
 function useVideoAreaAspect(ref: RefObject<HTMLDivElement | null>) {
   useEffect(() => {
@@ -55,22 +55,33 @@ export function Player() {
 
   return (
     <div
-      className={`${styles.page} ${chrome.controlsVisible ? "" : styles.pageImmersive}`}
+      className={cn(
+        "flex min-h-0 flex-1 flex-col overflow-hidden bg-bg",
+        !chrome.controlsVisible && "bg-black",
+      )}
     >
       <header
-        className={`${styles.header} ${chrome.controlsVisible ? "" : styles.headerHidden}`}
+        className={cn(
+          "player-header-transition relative z-10 flex max-h-16 shrink-0 items-center justify-between overflow-hidden border-b border-border px-[var(--space-lg)] py-[var(--space-md)] transition-[opacity,max-height,padding] duration-200 ease-out",
+          !chrome.controlsVisible &&
+            "pointer-events-none max-h-0 border-b-0 py-0 opacity-0",
+        )}
         aria-hidden={!chrome.controlsVisible}
       >
         <span
-          className={styles.brand}
+          className="font-semibold tracking-tight"
           data-tauri-drag-region={chrome.controlsVisible ? true : undefined}
         >
           Floater
         </span>
-        <div className={styles.headerActions}>
+        <div className="tauri-no-drag relative flex items-center gap-[var(--space-sm)]">
           <AlwaysOnTopToggle />
           <KeyboardHelp />
-          <button type="button" className={styles.linkButton} onClick={handleNewUrl}>
+          <button
+            type="button"
+            className="border-0 bg-transparent px-[var(--space-sm)] py-[var(--space-xs)] text-accent hover:text-accent-hover"
+            onClick={handleNewUrl}
+          >
             New URL
           </button>
         </div>
@@ -79,20 +90,20 @@ export function Player() {
       <div
         ref={shellRef}
         id="player-shell"
-        className={styles.shell}
+        className="flex min-h-0 flex-1 flex-col bg-black fullscreen:bg-black"
         onPointerEnter={chrome.onShellPointerEnter}
         onPointerLeave={chrome.onShellPointerLeave}
       >
         <div
           ref={videoAreaRef}
-          className={styles.videoArea}
+          className="relative min-h-0 w-full flex-1 overflow-hidden bg-black fullscreen:flex-1"
         >
           <YoutubePlayerHost />
           <PlayerLoadingOverlay />
           <PlayerErrorPanel onNewUrl={handleNewUrl} />
           {!chrome.controlsVisible ? (
             <div
-              className={styles.immersiveShield}
+              className="tauri-no-drag absolute inset-0 z-[12] cursor-pointer touch-none bg-transparent"
               aria-hidden
               data-testid="player-immersive-shield"
               onPointerDown={immersivePointer.onShieldPointerDown}

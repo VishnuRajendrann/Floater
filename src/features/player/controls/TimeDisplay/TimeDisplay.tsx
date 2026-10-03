@@ -1,11 +1,10 @@
 import { usePlayerProgress } from "../../../../state/player/playerContext";
 import { formatTime } from "../../../../utils/formatTime";
-import styles from "./TimeDisplay.module.css";
 
 export function TimeDisplay() {
   const { currentTime, duration } = usePlayerProgress();
   return (
-    <span className={styles.time}>
+    <span className="min-w-[6.5rem] text-xs whitespace-nowrap text-text-muted">
       {formatTime(currentTime)} / {formatTime(duration)}
     </span>
   );

@@ -1,7 +1,7 @@
 import { usePlayerMeta } from "../../../../state/player/playerContext";
 import { usePlayerCommands } from "../../context/PlayerCommandsContext";
 import { IconMuted, IconVolume } from "../PlayerIcons";
-import styles from "./MuteButton.module.css";
+import { cn } from "../../../../lib/cn";
 
 type Props = { disabled?: boolean };
 
@@ -12,7 +12,7 @@ export function MuteButton({ disabled }: Props) {
   return (
     <button
       type="button"
-      className={`${styles.button} ${muted ? styles.active : ""}`}
+      className={cn("player-control-btn", muted && "player-control-btn-active")}
       disabled={disabled}
       aria-label={muted ? "Unmute" : "Mute"}
       aria-pressed={muted}

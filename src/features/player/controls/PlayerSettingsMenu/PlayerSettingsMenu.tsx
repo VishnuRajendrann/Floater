@@ -5,7 +5,6 @@ import {
 } from "../../../../integrations/youtube/youtubePlaybackOptions";
 import { usePlayerCommands } from "../../context/PlayerCommandsContext";
 import { IconSettings } from "../PlayerIcons";
-import styles from "./PlayerSettingsMenu.module.css";
 
 type Props = { disabled?: boolean };
 
@@ -41,10 +40,10 @@ export function PlayerSettingsMenu({ disabled }: Props) {
   };
 
   return (
-    <div className={styles.wrap}>
+    <div className="relative">
       <button
         type="button"
-        className={styles.button}
+        className="player-control-btn text-white/85"
         disabled={disabled}
         aria-expanded={open}
         aria-label="Playback settings"
@@ -54,11 +53,15 @@ export function PlayerSettingsMenu({ disabled }: Props) {
         <IconSettings />
       </button>
       {open ? (
-        <div className={styles.panel} role="dialog" aria-label="Playback settings">
-          <label className={styles.field}>
-            <span className={styles.label}>Speed</span>
+        <div
+          className="absolute right-0 bottom-[calc(100%+var(--space-sm))] z-[12] w-[min(16rem,70vw)] rounded-md border border-white/10 bg-[rgb(18_18_22/0.96)] p-[var(--space-md)] text-white shadow-[0_8px_24px_rgb(0_0_0/0.45)]"
+          role="dialog"
+          aria-label="Playback settings"
+        >
+          <label className="mb-[var(--space-sm)] flex flex-col gap-[var(--space-xs)]">
+            <span className="text-xs text-white/65">Speed</span>
             <select
-              className={styles.select}
+              className="w-full rounded-md border border-white/15 bg-black/35 px-[var(--space-sm)] py-[var(--space-xs)] text-inherit"
               value={String(playbackRate)}
               onChange={(event) => {
                 const rate = Number(event.target.value);
@@ -73,10 +76,10 @@ export function PlayerSettingsMenu({ disabled }: Props) {
               ))}
             </select>
           </label>
-          <label className={styles.field}>
-            <span className={styles.label}>Quality</span>
+          <label className="mb-[var(--space-sm)] flex flex-col gap-[var(--space-xs)]">
+            <span className="text-xs text-white/65">Quality</span>
             <select
-              className={styles.select}
+              className="w-full rounded-md border border-white/15 bg-black/35 px-[var(--space-sm)] py-[var(--space-xs)] text-inherit"
               value={quality}
               onChange={(event) => {
                 const next = event.target.value;
@@ -91,12 +94,12 @@ export function PlayerSettingsMenu({ disabled }: Props) {
               ))}
             </select>
           </label>
-          <p className={styles.note}>
+          <p className="mb-[var(--space-sm)] text-[0.7rem] leading-snug text-white/55">
             Quality is limited by YouTube for embedded playback; Auto is recommended.
           </p>
           <button
             type="button"
-            className={styles.close}
+            className="w-full rounded-md border-0 bg-white/10 px-[var(--space-xs)] py-[var(--space-xs)] text-inherit hover:bg-white/[0.14]"
             onClick={() => setOpen(false)}
           >
             Close

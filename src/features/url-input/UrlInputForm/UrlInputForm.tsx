@@ -1,7 +1,6 @@
 import { useState } from "react";
 import type { KeyboardEvent } from "react";
 import type { AppError } from "../../../types/errors";
-import styles from "./UrlInputForm.module.css";
 
 type Props = {
   onSubmit: (url: string) => void;
@@ -23,14 +22,14 @@ export function UrlInputForm({ onSubmit, error }: Props) {
   };
 
   return (
-    <div className={styles.wrap}>
-      <label className={styles.label} htmlFor="youtube-url">
+    <div className="flex flex-col gap-[var(--space-sm)]">
+      <label className="text-sm font-medium text-text-muted" htmlFor="youtube-url">
         YouTube URL
       </label>
-      <div className={styles.row}>
+      <div className="flex flex-wrap gap-[var(--space-sm)]">
         <input
           id="youtube-url"
-          className={styles.input}
+          className="min-w-0 flex-[1_1_10rem] rounded-md border border-border bg-surface-elevated px-3 py-2.5 text-text"
           type="url"
           inputMode="url"
           placeholder="https://www.youtube.com/watch?v=..."
@@ -40,15 +39,19 @@ export function UrlInputForm({ onSubmit, error }: Props) {
           autoComplete="off"
           spellCheck={false}
         />
-        <button type="button" className={styles.button} onClick={submit}>
+        <button
+          type="button"
+          className="shrink-0 rounded-md border-0 bg-accent px-4 py-2.5 font-semibold text-white hover:bg-accent-hover"
+          onClick={submit}
+        >
           Load
         </button>
       </div>
       {error ? (
-        <p className={styles.error} role="alert">
+        <p className="m-0 text-sm text-danger" role="alert">
           {error.message}
           {import.meta.env.DEV && error.debug ? (
-            <span className={styles.debug}> ({error.debug})</span>
+            <span className="text-text-muted"> ({error.debug})</span>
           ) : null}
         </p>
       ) : null}

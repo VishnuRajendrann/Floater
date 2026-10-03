@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { usePlayerCommands } from "../../context/PlayerCommandsContext";
 import { IconCaptions } from "../PlayerIcons";
-import styles from "./CaptionsToggle.module.css";
+import { cn } from "../../../../lib/cn";
 
 type Props = { disabled?: boolean };
 
@@ -12,7 +12,7 @@ export function CaptionsToggle({ disabled }: Props) {
   return (
     <button
       type="button"
-      className={`${styles.button} ${enabled ? styles.active : ""}`}
+      className={cn("player-control-btn", enabled && "player-control-btn-active")}
       disabled={disabled}
       aria-label={enabled ? "Turn off captions" : "Turn on captions"}
       aria-pressed={enabled}

@@ -2,7 +2,6 @@ import { usePlayerMeta } from "../../../../state/player/playerContext";
 import { YT_PLAYER_STATE } from "../../../../integrations/youtube/types";
 import { usePlayerCommands } from "../../context/PlayerCommandsContext";
 import { IconPause, IconPlay } from "../PlayerIcons";
-import styles from "./PlayPauseButton.module.css";
 
 type Props = { disabled?: boolean };
 
@@ -14,7 +13,7 @@ export function PlayPauseButton({ disabled }: Props) {
   return (
     <button
       type="button"
-      className={styles.button}
+      className="player-control-btn"
       disabled={disabled}
       aria-label={playing ? "Pause" : "Play"}
       title={playing ? "Pause (Space)" : "Play (Space)"}

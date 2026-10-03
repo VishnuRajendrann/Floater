@@ -1,13 +1,9 @@
-import styles from "./PlayerWindowDragBand.module.css";
-
-/** Always-on strip for moving the window when the native title bar is hidden. */
 export function PlayerWindowDragBand() {
   return (
     <div
-      className={styles.band}
-      data-tauri-drag-region
+      className="tauri-drag absolute top-0 right-0 left-0 z-[15] h-5 cursor-grab active:cursor-grabbing"
       aria-hidden
-      title="Drag to move window"
+      data-tauri-drag-region
     />
   );
 }

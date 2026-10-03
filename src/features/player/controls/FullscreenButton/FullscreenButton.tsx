@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import type { RefObject } from "react";
 import { usePlayerDispatch, usePlayerMeta } from "../../../../state/player/playerContext";
 import { IconFullscreen, IconFullscreenExit } from "../PlayerIcons";
-import styles from "./FullscreenButton.module.css";
 
 type Props = {
   shellRef: RefObject<HTMLDivElement | null>;
@@ -39,7 +38,7 @@ export function FullscreenButton({ shellRef, disabled }: Props) {
   return (
     <button
       type="button"
-      className={styles.button}
+      className="player-control-btn"
       disabled={disabled}
       aria-label={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
       title={isFullscreen ? "Exit fullscreen (F)" : "Fullscreen (F)"}

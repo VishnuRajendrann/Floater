@@ -8,7 +8,6 @@ import { parseYoutubeUrl } from "../../integrations/youtube/parseYoutubeUrl";
 import { parseFailureToAppError } from "../../integrations/youtube/mapYoutubeErrorCode";
 import { resetLocalData } from "../../storage/resetLocalData";
 import type { AppError } from "../../types/errors";
-import styles from "./Home.module.css";
 
 export function Home() {
   const { loadVideo } = useApp();
@@ -25,16 +24,18 @@ export function Home() {
   };
 
   return (
-    <main className={styles.page}>
-      <div className={styles.card}>
-        <div className={styles.cardHeader}>
-          <h1 className={styles.title}>Floater</h1>
-          <div className={styles.headerControls}>
+    <main className="box-border flex h-full flex-col items-center overflow-x-hidden overflow-y-auto p-[clamp(var(--space-sm),3vw,var(--space-xl))]">
+      <div className="my-auto box-border w-full min-w-0 max-w-lg shrink-0 overflow-x-hidden rounded-lg border border-border bg-surface p-[clamp(var(--space-md),4vw,var(--space-xl))] shadow-[0_12px_40px_rgb(0_0_0/0.25)]">
+        <div className="mb-[var(--space-sm)] flex items-start justify-between gap-[var(--space-md)]">
+          <h1 className="m-0 text-[clamp(1.5rem,5vw,2rem)] font-bold tracking-tight">
+            Floater
+          </h1>
+          <div className="flex flex-wrap justify-end gap-[var(--space-sm)]">
             <AlwaysOnTopToggle />
             <ThemeToggle />
           </div>
         </div>
-        <p className={styles.subtitle}>
+        <p className="mb-[var(--space-lg)] text-[clamp(0.875rem,2.5vw,1rem)] leading-normal text-text-muted">
           Paste a YouTube link for a focused desktop viewing experience.
         </p>
         <form
@@ -45,10 +46,12 @@ export function Home() {
           <UrlInputForm onSubmit={handleSubmit} error={error} />
         </form>
         <RecentVideosList />
-        <p className={styles.privacy}>History and preferences stay on this device.</p>
+        <p className="mt-[var(--space-lg)] text-xs text-text-muted">
+          History and preferences stay on this device.
+        </p>
         <button
           type="button"
-          className={styles.reset}
+          className="mt-[var(--space-sm)] border-0 bg-transparent text-xs text-text-muted underline"
           onClick={() => {
             if (
               window.confirm(

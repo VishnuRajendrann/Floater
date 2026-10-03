@@ -1,6 +1,5 @@
 import { useApp } from "../../../../app/providers/AppProvider";
 import { useYoutubePlayer } from "../../hooks/useYoutubePlayer";
-import styles from "./YoutubePlayerHost.module.css";
 
 export function YoutubePlayerHost() {
   const { videoId } = useApp();
@@ -9,7 +8,7 @@ export function YoutubePlayerHost() {
   return (
     <div
       ref={mountRef}
-      className={styles.host}
+      className="youtube-player-host"
       aria-label="YouTube video player"
     />
   );

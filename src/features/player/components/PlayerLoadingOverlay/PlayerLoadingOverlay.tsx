@@ -1,5 +1,4 @@
 import { usePlayerMeta } from "../../../../state/player/playerContext";
-import styles from "./PlayerLoadingOverlay.module.css";
 
 export function PlayerLoadingOverlay() {
   const { loadPhase } = usePlayerMeta();
@@ -16,9 +15,15 @@ export function PlayerLoadingOverlay() {
       : "Preparing video…";
 
   return (
-    <div className={styles.overlay} aria-live="polite">
-      <div className={styles.spinner} />
-      <p>{message}</p>
+    <div
+      className="absolute inset-0 z-[2] flex flex-col items-center justify-center gap-[var(--space-md)] bg-black/55 text-white"
+      aria-live="polite"
+    >
+      <div
+        className="h-8 w-8 animate-spin rounded-full border-[3px] border-white/25 border-t-white"
+        aria-hidden
+      />
+      <p className="m-0 text-sm">{message}</p>
     </div>
   );
 }

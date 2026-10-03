@@ -3,7 +3,6 @@ import {
   usePlayerProgress,
 } from "../../../../state/player/playerContext";
 import { usePlayerCommands } from "../../context/PlayerCommandsContext";
-import styles from "./SeekBar.module.css";
 
 type Props = { disabled?: boolean };
 
@@ -15,7 +14,7 @@ export function SeekBar({ disabled }: Props) {
 
   return (
     <input
-      className={styles.seek}
+      className="control-bar-range min-w-16 flex-1"
       type="range"
       min={0}
       max={max}

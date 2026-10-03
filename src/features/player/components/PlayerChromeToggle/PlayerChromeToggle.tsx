@@ -1,4 +1,4 @@
-import styles from "./PlayerChromeToggle.module.css";
+import { cn } from "../../../../lib/cn";
 
 type Props = {
   visible: boolean;
@@ -16,15 +16,23 @@ export function PlayerChromeToggle({
   return (
     <button
       type="button"
-      className={`${styles.button} ${visible ? styles.visible : ""} ${active ? styles.active : ""}`}
-      aria-label={active ? "Hide window and playback controls" : "Show window and playback controls"}
+      className={cn(
+        "tauri-no-drag absolute top-[var(--space-sm)] right-[var(--space-sm)] z-30 flex h-9 w-9 items-center justify-center rounded-md border border-white/35 bg-black/55 p-0 text-white transition-[opacity,background] duration-200 ease-out hover:bg-black/75 motion-reduce:transition-none",
+        visible ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0",
+        active && "border-accent bg-black/80",
+      )}
+      aria-label={
+        active
+          ? "Hide window and playback controls"
+          : "Show window and playback controls"
+      }
       aria-pressed={active}
       title={active ? "Hide controls" : "Show controls"}
       onClick={onToggle}
       onPointerEnter={onPointerEnter}
     >
       <svg
-        className={styles.icon}
+        className="h-[1.1rem] w-[1.1rem]"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"

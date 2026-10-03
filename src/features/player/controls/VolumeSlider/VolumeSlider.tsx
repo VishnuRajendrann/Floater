@@ -1,7 +1,6 @@
 import { usePlayerMeta } from "../../../../state/player/playerContext";
 import { usePlayerCommands } from "../../context/PlayerCommandsContext";
 import { usePlayerDispatch } from "../../../../state/player/playerContext";
-import styles from "./VolumeSlider.module.css";
 
 type Props = { disabled?: boolean };
 
@@ -12,7 +11,7 @@ export function VolumeSlider({ disabled }: Props) {
 
   return (
     <input
-      className={`${styles.volume} volumeControl`}
+      className="control-bar-range volumeControl w-20 max-[720px]:hidden"
       type="range"
       min={0}
       max={100}

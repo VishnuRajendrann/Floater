@@ -1,5 +1,5 @@
 import { usePreferences } from "../../../state/preferences/preferencesContext";
-import styles from "./AlwaysOnTopToggle.module.css";
+import { cn } from "../../../lib/cn";
 
 export function AlwaysOnTopToggle() {
   const { alwaysOnTopEnabled, setAlwaysOnTop } = usePreferences();
@@ -8,7 +8,10 @@ export function AlwaysOnTopToggle() {
   return (
     <button
       type="button"
-      className={`${styles.button} ${enabled ? styles.on : ""}`}
+      className={cn(
+        "rounded-md border border-border bg-surface px-2 py-1 text-sm whitespace-nowrap text-text-muted hover:text-text",
+        enabled && "border-accent text-text",
+      )}
       aria-label="Always on top"
       aria-pressed={enabled}
       onClick={() => setAlwaysOnTop(!enabled)}
