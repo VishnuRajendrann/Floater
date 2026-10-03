@@ -3,7 +3,7 @@ import { AppRoutes } from "./routes/AppRoutes";
 import { PlayerCommandsProvider } from "../features/player/context/PlayerCommandsContext";
 import { useAlwaysOnTopSync } from "../features/preferences/useAlwaysOnTopSync";
 import { useWindowPersistence } from "../features/preferences/useWindowPersistence";
-import { RecentVideosProvider } from "../features/recent-videos/recentVideosContext";
+import { RecentVideosProvider } from "../features/home/recentVideosContext";
 import { PlayerProvider } from "../state/player/playerContext";
 import { PreferencesProvider } from "../state/preferences/preferencesContext";
 

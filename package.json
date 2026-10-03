@@ -9,8 +9,8 @@
     "lint": "eslint .",
     "test": "vitest run",
     "preview": "vite preview",
-    "icons": "tauri icon public/assets/icons/icon.svg",
-    "tauri:dev": "npm run icons && tauri dev",
+    "icons": "tauri icon public/assets/icons/icon.svg && node scripts/prune-windows-icons.mjs",
+    "tauri:dev": "tauri dev",
     "tauri:build": "npm run icons && tauri build",
     "tauri": "tauri"
   },

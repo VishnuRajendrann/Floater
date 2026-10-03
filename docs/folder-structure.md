@@ -1,67 +1,53 @@
 # Floater folder structure
 
-This repo follows a layered layout: **app shell → pages → features → integrations → state**.
+Layered layout: **app shell → pages → features → shared / integrations / state**.
 
 ```
 Floater/
-├── docs/                      # Project documentation
-│   └── phase1/
-├── public/                    # Static assets (Vite, copied to dist/)
-│   └── assets/
-│       └── icons/             # Source SVG (favicon + npm run icons)
+├── docs/
+├── public/assets/icons/       # Source SVG only
+├── scripts/                   # prune-windows-icons.mjs
 ├── src/
-│   ├── app/                   # Application shell
-│   │   ├── App.tsx
-│   │   ├── providers/         # App-wide React context
-│   │   └── routes/            # Top-level screen routing
-│   ├── pages/                 # Full-screen views (Home, Player)
-│   ├── features/              # User-facing feature modules
+│   ├── app/                   # Shell, providers, routes
+│   ├── pages/                 # Home.tsx, Player.tsx
+│   ├── features/
+│   │   ├── home/              # URL form, recent videos
 │   │   ├── player/
-│   │   │   ├── components/    # Each component in its own folder (+ .module.css)
-│   │   │   ├── controls/      # One folder per control (+ CSS + index.ts)
-│   │   │   ├── context/       # Player command bridge (adapter → UI)
-│   │   │   └── hooks/         # Player effects (YouTube lifecycle, shortcuts)
-│   │   └── url-input/
-│   ├── integrations/          # External systems (YouTube IFrame API)
-│   │   └── youtube/
-│   ├── storage/               # Versioned localStorage helpers
-│   ├── keyboard/              # Shortcut registry + input guards
-│   ├── state/
-│   │   ├── player/
+│   │   │   ├── components/    # Shell UI (flat .tsx files)
+│   │   │   ├── controls/      # Playback controls (flat .tsx files)
+│   │   │   ├── context/
+│   │   │   └── hooks/
 │   │   └── preferences/
-│   ├── styles/                # Global CSS + design tokens
-│   ├── types/                 # Shared TypeScript types
-│   ├── utils/                 # Pure helpers (no React)
-│   ├── main.tsx
-│   └── vite-env.d.ts
-└── src-tauri/                 # Desktop shell (Rust)
-    ├── capabilities/
-    ├── icons/                 # Generated desktop icons (`npm run icons`)
-    └── src/
+│   ├── shared/
+│   │   ├── lib/cn.ts
+│   │   └── ui/                # PlayerControlButton, PopoverPanel
+│   ├── integrations/          # YouTube IFrame API, Tauri window
+│   ├── storage/
+│   ├── keyboard/
+│   ├── state/
+│   ├── styles/                # Tailwind entry + design tokens
+│   ├── types/
+│   ├── utils/
+│   └── main.tsx
+└── src-tauri/                 # Windows desktop shell
 ```
 
 ## Conventions
 
 | Rule | Detail |
 |------|--------|
-| **Pages** | Compose features; minimal logic. |
-| **Features** | One folder per product area; **each UI component lives in its own folder** with co-located CSS (`Component/Component.tsx`, `Component.module.css`, `index.ts`). |
-| **Integrations** | Only layer that talks to `window.YT` / external APIs. |
-| **State** | Reducers and providers grouped by domain (`state/player/`). |
-| **Public assets** | Under `public/assets/` by type (`icons/`, `images/`, …). Do not commit Tauri-generated rasters. |
-| **Desktop icons** | Generated under `src-tauri/icons/` (gitignored); see `docs/static-assets.md`. |
+| **Pages** | Compose features; keep logic in hooks. |
+| **Features** | One folder per product area. UI files are flat `.tsx` modules, not a folder plus barrel per component. |
+| **Shared** | Reused class helpers and small UI primitives. Features may import `shared`; `shared` does not import features. |
+| **Integrations** | Only layer that talks to `window.YT` or Tauri window APIs. |
+| **State** | Reducers and providers grouped by domain. |
+| **Styling** | Tailwind utilities. Global tokens stay in `styles/tokens.css`. YouTube iframe sizing stays unlayered in `styles/global.css`. |
+| **Desktop icons** | Windows NSIS only. See `docs/static-assets.md`. |
 
 ## Import direction
 
-`pages` → `features` → `integrations` / `state` / `utils` / `types`
+`pages` → `features` → `shared` / `integrations` / `state` / `utils` / `types`
 
-Avoid importing pages or features from `integrations` or `utils`.
+Import the concrete file (`./PlayPauseButton`), not a re-export `index.ts`.
 
-### Example (player control)
-
-```
-features/player/controls/SeekBar/
-  SeekBar.tsx
-  SeekBar.module.css
-  index.ts          # re-exports SeekBar
-```
+Do not import pages or features from `integrations`, `shared`, or `utils`.
