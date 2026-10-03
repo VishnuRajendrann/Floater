@@ -45,6 +45,8 @@ npm run tauri:build
 
 The NSIS setup is written under `src-tauri/target/release/bundle/nsis/`. Installing it is the release check. Development (`npm run tauri:dev`) and the browser (`npm run dev` on port 5173) do not use the production localhost origin (`http://localhost:17352`).
 
+**Always on Top** is a desktop-only toggle (Home and the player header). It uses the native window and has no effect in the browser.
+
 ## YouTube / Premium
 
 Floater uses the official [YouTube IFrame Player API](https://developers.google.com/youtube/iframe_api_reference). It does **not** bypass ads, DRM, or authentication.
@@ -62,7 +64,7 @@ Release storage is tied to `http://localhost:17352`. Browser dev storage on port
 
 ## Status
 
-**v1.0** — Windows desktop player. See [`CHANGELOG.md`](CHANGELOG.md).
+**v1.0.1** — Windows desktop player. See [`CHANGELOG.md`](CHANGELOG.md).
 
 ## Assets
 

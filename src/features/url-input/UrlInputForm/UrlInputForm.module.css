@@ -12,12 +12,14 @@
 
 .row {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--space-sm);
 }
 
 .input {
-  flex: 1;
+  flex: 1 1 10rem;
   min-width: 0;
+  width: 100%;
   padding: 0.65rem 0.75rem;
   border-radius: var(--radius-md);
   border: 1px solid var(--color-border);

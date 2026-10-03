@@ -1,0 +1,15 @@
+.band {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1.25rem;
+  z-index: 15;
+  cursor: grab;
+  -webkit-app-region: drag;
+  app-region: drag;
+}
+
+.band:active {
+  cursor: grabbing;
+}

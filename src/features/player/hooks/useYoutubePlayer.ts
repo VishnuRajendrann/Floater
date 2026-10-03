@@ -93,6 +93,7 @@ export function useYoutubePlayer(videoId: string | null) {
             } else {
               adapterRef.current.unmute();
             }
+            adapterRef.current.prepareCaptionsModule();
 
             const duration = adapterRef.current.getDuration();
             const muted = adapterRef.current.isMuted();
@@ -156,6 +157,14 @@ export function useYoutubePlayer(videoId: string | null) {
               persistMuted(true);
             }
           },
+          toggleCaptions: () => adapter.toggleCaptions(),
+          areCaptionsEnabled: () => adapter.areCaptionsEnabled(),
+          getPlaybackRate: () => adapter.getPlaybackRate(),
+          setPlaybackRate: (rate) => adapter.setPlaybackRate(rate),
+          getAvailablePlaybackRates: () => adapter.getAvailablePlaybackRates(),
+          getPlaybackQuality: () => adapter.getPlaybackQuality(),
+          setPlaybackQuality: (quality) => adapter.setPlaybackQuality(quality),
+          getAvailableQualityLevels: () => adapter.getAvailableQualityLevels(),
         };
         adapter.create(videoId);
       } catch (error) {

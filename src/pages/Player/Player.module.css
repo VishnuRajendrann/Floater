@@ -1,8 +1,14 @@
 .page {
+  height: 100%;
   min-height: 100%;
   display: flex;
   flex-direction: column;
   background: var(--color-bg);
+  overflow: hidden;
+}
+
+.pageImmersive {
+  background: #000;
 }
 
 .header {
@@ -12,7 +18,20 @@
   padding: var(--space-md) var(--space-lg);
   border-bottom: 1px solid var(--color-border);
   position: relative;
-  z-index: 5;
+  z-index: 10;
+  flex-shrink: 0;
+  transition: opacity 200ms ease, max-height 200ms ease, padding 200ms ease;
+  max-height: 4rem;
+  overflow: hidden;
+}
+
+.headerHidden {
+  opacity: 0;
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  border-bottom-width: 0;
+  pointer-events: none;
 }
 
 .headerActions {
@@ -20,6 +39,8 @@
   align-items: center;
   gap: var(--space-sm);
   position: relative;
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
 }
 
 .brand {
@@ -51,18 +72,31 @@
 }
 
 .shell:fullscreen .videoArea {
-  max-height: 100%;
+  flex: 1;
 }
 
 .videoArea {
   position: relative;
   flex: 1;
   min-height: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  aspect-ratio: 16 / 9;
-  max-height: calc(100% - var(--control-bar-height));
-  margin: 0 auto;
   width: 100%;
+  overflow: hidden;
+  background: #000;
+}
+
+.immersiveShield {
+  position: absolute;
+  inset: 0;
+  z-index: 12;
+  background: transparent;
+  touch-action: none;
+  cursor: pointer;
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header {
+    transition: none;
+  }
 }

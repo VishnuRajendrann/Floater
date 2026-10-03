@@ -58,4 +58,32 @@ describe("preferencesStore", () => {
     localStorage.setItem(PREFERENCES_STORAGE_KEY, "{not json");
     expect(loadPreferences()).toEqual(DEFAULT_PREFERENCES);
   });
+
+  it("defaults always on top to off", () => {
+    expect(loadPreferences().alwaysOnTop).toBe(false);
+  });
+
+  it("persists always on top", () => {
+    savePreferences({ ...DEFAULT_PREFERENCES, alwaysOnTop: true });
+    expect(loadPreferences().alwaysOnTop).toBe(true);
+  });
+
+  it("treats a missing always on top field as off", () => {
+    localStorage.setItem(
+      PREFERENCES_STORAGE_KEY,
+      JSON.stringify({ version: 1, volume: 40, muted: true, theme: "dark" }),
+    );
+    expect(loadPreferences().alwaysOnTop).toBe(false);
+  });
+
+  it("clamps saved window size to allowed minimums", () => {
+    savePreferences({
+      ...DEFAULT_PREFERENCES,
+      window: { width: 50, height: 40 },
+    });
+    expect(loadPreferences().window).toEqual({
+      width: 200,
+      height: 100,
+    });
+  });
 });

@@ -13,6 +13,14 @@ export type PlayerCommands = {
   seekTo: (seconds: number) => void;
   setVolume: (volume: number) => void;
   toggleMute: () => void;
+  toggleCaptions: () => boolean;
+  areCaptionsEnabled: () => boolean;
+  getPlaybackRate: () => number;
+  setPlaybackRate: (rate: number) => void;
+  getAvailablePlaybackRates: () => number[];
+  getPlaybackQuality: () => string;
+  setPlaybackQuality: (quality: string) => void;
+  getAvailableQualityLevels: () => string[];
 };
 
 const PlayerCommandsContext =
@@ -45,6 +53,16 @@ export function usePlayerCommands(): PlayerCommands {
       seekTo: (seconds) => ref.current?.seekTo(seconds),
       setVolume: (volume) => ref.current?.setVolume(volume),
       toggleMute: () => ref.current?.toggleMute(),
+      toggleCaptions: () => ref.current?.toggleCaptions() ?? false,
+      areCaptionsEnabled: () => ref.current?.areCaptionsEnabled() ?? false,
+      getPlaybackRate: () => ref.current?.getPlaybackRate() ?? 1,
+      setPlaybackRate: (rate) => ref.current?.setPlaybackRate(rate),
+      getAvailablePlaybackRates: () =>
+        ref.current?.getAvailablePlaybackRates() ?? [1],
+      getPlaybackQuality: () => ref.current?.getPlaybackQuality() ?? "auto",
+      setPlaybackQuality: (quality) => ref.current?.setPlaybackQuality(quality),
+      getAvailableQualityLevels: () =>
+        ref.current?.getAvailableQualityLevels() ?? [],
     }),
     [ref],
   );
