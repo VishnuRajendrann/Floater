@@ -5,7 +5,7 @@ Files here are copied into the web build unchanged.
 ```
 public/
   assets/
-    icons/          # Brand / favicon **sources** (edit SVG here)
+    icons/          # Brand / favicon source (icon.png)
   README.md
 ```
 

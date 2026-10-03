@@ -146,7 +146,7 @@ async function isWindowOnAnyMonitor(): Promise<boolean> {
 
 
 
-/** Show, unminimize, keep the borderless rounded frame, and center if saved bounds are off-screen. */
+/** Show, unminimize, restore the title bar, and center if saved bounds are off-screen. */
 
 export async function ensureWindowVisible(): Promise<void> {
 
@@ -168,8 +168,7 @@ export async function ensureWindowVisible(): Promise<void> {
 
     }
 
-    await appWindow.setDecorations(false);
-    await appWindow.setShadow(true);
+    await appWindow.setDecorations(true);
 
     if (!(await isWindowOnAnyMonitor())) {
 
@@ -260,14 +259,13 @@ export async function readNativeAlwaysOnTop(): Promise<boolean | null> {
 
 
 export async function setWindowDecorations(enabled: boolean): Promise<void> {
-  void enabled;
   if (!isTauri()) {
     return;
   }
   const appWindow = getCurrentWindow();
-  await appWindow.setDecorations(false);
+  await appWindow.setDecorations(enabled);
   try {
-    await appWindow.setShadow(true);
+    await appWindow.setShadow(!enabled);
   } catch {
     // Optional; browser dev has no native shadow.
   }

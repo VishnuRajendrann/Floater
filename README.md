@@ -28,7 +28,7 @@ Paste a YouTube URL on the home screen to open the player.
 | `npm run tauri:build` | Regenerate icons + Windows installer |
 | `npm test` | Unit tests (Vitest) |
 | `npm run lint` | ESLint |
-| `npm run icons` | Regenerate `src-tauri/icons/` from `public/assets/icons/icon.svg` |
+| `npm run icons` | Regenerate `src-tauri/icons/` from `public/assets/icons/icon.png` |
 
 ## Branches
 
