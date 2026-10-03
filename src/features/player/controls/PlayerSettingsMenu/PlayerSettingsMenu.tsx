@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   DEFAULT_PLAYBACK_RATES,
   formatPlaybackQuality,
@@ -17,10 +17,7 @@ export function PlayerSettingsMenu({ disabled }: Props) {
   const [rates, setRates] = useState<number[]>(DEFAULT_PLAYBACK_RATES);
   const [qualities, setQualities] = useState<string[]>([]);
 
-  useEffect(() => {
-    if (!open || disabled) {
-      return;
-    }
+  const syncFromPlayer = () => {
     setPlaybackRateState(commands.getPlaybackRate());
     setQualityState(commands.getPlaybackQuality());
     const availableRates = commands.getAvailablePlaybackRates();
@@ -29,7 +26,19 @@ export function PlayerSettingsMenu({ disabled }: Props) {
     );
     const availableQualities = commands.getAvailableQualityLevels();
     setQualities(availableQualities.length > 0 ? availableQualities : ["auto"]);
-  }, [open, disabled, commands]);
+  };
+
+  const handleToggle = () => {
+    if (disabled) {
+      return;
+    }
+    if (open) {
+      setOpen(false);
+      return;
+    }
+    syncFromPlayer();
+    setOpen(true);
+  };
 
   return (
     <div className={styles.wrap}>
@@ -40,7 +49,7 @@ export function PlayerSettingsMenu({ disabled }: Props) {
         aria-expanded={open}
         aria-label="Playback settings"
         title="Speed and quality"
-        onClick={() => setOpen((value) => !value)}
+        onClick={handleToggle}
       >
         <IconSettings />
       </button>
