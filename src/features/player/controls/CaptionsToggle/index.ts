@@ -1,1 +1,0 @@
-export { CaptionsToggle } from "./CaptionsToggle";

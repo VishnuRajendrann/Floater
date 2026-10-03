@@ -12,4 +12,4 @@ Regenerate:
 npm run icons
 ```
 
-This directory is **gitignored** (except this README). It contains many PNG/XML/ICO files for Windows, macOS, iOS, and Android packaging — see [`docs/static-assets.md`](../../docs/static-assets.md).
+This directory is **gitignored** (except this README). After `npm run icons`, only Windows installer icons remain (`icon.ico` and the PNGs listed in `tauri.conf.json`). See [`docs/static-assets.md`](../../docs/static-assets.md).

@@ -7,7 +7,7 @@ import {
   type ReactNode,
 } from "react";
 import { canonicalWatchUrl } from "../../storage/recentVideosStore";
-import { useRecentVideos } from "../../features/recent-videos/recentVideosContext";
+import { useRecentVideos } from "../../features/home/recentVideosContext";
 
 export type AppScreen = "home" | "player";
 
