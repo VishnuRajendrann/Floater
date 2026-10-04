@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseYoutubeUrl } from "./parseYoutubeUrl";
+import { parseYoutubeUrl } from "./youtubeCore";
 
 describe("parseYoutubeUrl", () => {
   it("parses watch URLs", () => {

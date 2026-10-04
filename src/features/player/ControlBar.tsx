@@ -1,14 +1,16 @@
 import type { RefObject } from "react";
-import { usePlayerMeta } from "../../../state/player/playerContext";
-import { CaptionsToggle } from "../controls/CaptionsToggle";
-import { FullscreenButton } from "../controls/FullscreenButton";
-import { MuteButton } from "../controls/MuteButton";
-import { PlayerSettingsMenu } from "../controls/PlayerSettingsMenu";
-import { PlayPauseButton } from "../controls/PlayPauseButton";
-import { SeekBar } from "../controls/SeekBar";
-import { TimeDisplay } from "../controls/TimeDisplay";
-import { VolumeSlider } from "../controls/VolumeSlider";
-import { cn } from "../../../shared/lib/cn";
+import { cn } from "../../shared/ui";
+import { usePlayerMeta } from "../../state/player/playerContext";
+import {
+  CaptionsToggle,
+  FullscreenButton,
+  MuteButton,
+  PlayPauseButton,
+  SeekBar,
+  TimeDisplay,
+  VolumeSlider,
+} from "./playerControls";
+import { PlayerSettingsMenu } from "./PlayerSettingsMenu";
 
 type Props = {
   shellRef: RefObject<HTMLDivElement | null>;

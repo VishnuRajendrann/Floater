@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatPlaybackQuality } from "./youtubePlaybackOptions";
+import { formatPlaybackQuality } from "./youtubeCore";
 
 describe("formatPlaybackQuality", () => {
   it("maps known YouTube quality levels", () => {

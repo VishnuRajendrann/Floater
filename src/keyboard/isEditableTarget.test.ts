@@ -2,7 +2,7 @@
  * @vitest-environment jsdom
  */
 import { describe, expect, it } from "vitest";
-import { isEditableTarget } from "./isEditableTarget";
+import { isEditableTarget } from "./playerShortcuts";
 
 describe("isEditableTarget", () => {
   it("detects input elements", () => {

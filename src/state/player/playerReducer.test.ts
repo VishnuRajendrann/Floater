@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { createAppError } from "../../types/errors";
-import { initialPlayerState, playerReducer } from "./playerTypes";
+import { initialPlayerState, playerReducer } from "./playerContext";
 
 describe("playerReducer", () => {
   it("loads a video", () => {

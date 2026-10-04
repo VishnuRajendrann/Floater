@@ -1,5 +1,16 @@
-import { YT_PLAYER_STATE } from "../integrations/youtube/types";
-import type { PlayerCommands } from "../features/player/context/PlayerCommandsContext";
+import { YT_PLAYER_STATE } from "../integrations/youtube/youtubeCore";
+import type { PlayerCommands } from "../features/player/PlayerCommandsContext";
+
+export function isEditableTarget(target: EventTarget | null): boolean {
+  if (!(target instanceof HTMLElement)) {
+    return false;
+  }
+  if (target.isContentEditable) {
+    return true;
+  }
+  const tag = target.tagName;
+  return tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT";
+}
 
 export type PlayerShortcutContext = {
   commands: PlayerCommands;

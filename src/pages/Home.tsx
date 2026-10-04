@@ -1,12 +1,12 @@
 import { useState, type FormEvent } from "react";
-import { useApp } from "../app/providers/AppProvider";
-import { AlwaysOnTopToggle } from "../features/preferences/AlwaysOnTopToggle";
-import { ThemeToggle } from "../features/preferences/ThemeToggle";
-import { RecentVideosList } from "../features/home/RecentVideosList";
-import { UrlInputForm } from "../features/home/UrlInputForm";
-import { parseYoutubeUrl } from "../integrations/youtube/parseYoutubeUrl";
-import { parseFailureToAppError } from "../integrations/youtube/mapYoutubeErrorCode";
-import { resetLocalData } from "../storage/resetLocalData";
+import { useApp } from "../app/AppShell";
+import { RecentVideosList, UrlInputForm } from "../features/home/homeScreen";
+import { AlwaysOnTopToggle, ThemeToggle } from "../features/preferences/PreferencesToggles";
+import {
+  parseFailureToAppError,
+  parseYoutubeUrl,
+} from "../integrations/youtube/youtubeCore";
+import { resetLocalData } from "../storage/recentVideosStore";
 import type { AppError } from "../types/errors";
 
 export function Home() {

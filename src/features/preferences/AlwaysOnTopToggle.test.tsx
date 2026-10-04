@@ -5,7 +5,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { PreferencesProvider } from "../../state/preferences/preferencesContext";
-import { AlwaysOnTopToggle } from "./AlwaysOnTopToggle";
+import { AlwaysOnTopToggle } from "./PreferencesToggles";
 
 const applyAlwaysOnTop = vi.fn();
 const readNativeAlwaysOnTop = vi.fn();

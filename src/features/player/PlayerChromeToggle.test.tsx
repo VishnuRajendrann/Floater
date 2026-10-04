@@ -4,7 +4,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
-import { PlayerChromeToggle } from "./PlayerChromeToggle";
+import { PlayerChromeToggle } from "./playerChrome";
 
 describe("PlayerChromeToggle", () => {
   it("toggles via click and reflects active state", async () => {

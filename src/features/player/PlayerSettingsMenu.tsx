@@ -2,11 +2,10 @@ import { useState } from "react";
 import {
   DEFAULT_PLAYBACK_RATES,
   formatPlaybackQuality,
-} from "../../../integrations/youtube/youtubePlaybackOptions";
-import { usePlayerCommands } from "../context/PlayerCommandsContext";
-import { PlayerControlButton } from "../../../shared/ui/PlayerControlButton";
-import { PopoverPanel } from "../../../shared/ui/PopoverPanel";
-import { IconSettings } from "./PlayerIcons";
+} from "../../integrations/youtube/youtubeCore";
+import { PlayerControlButton, PopoverPanel } from "../../shared/ui";
+import { IconSettings } from "./playerControls";
+import { usePlayerCommands } from "./PlayerCommandsContext";
 
 type Props = { disabled?: boolean };
 

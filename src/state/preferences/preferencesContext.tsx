@@ -4,19 +4,156 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
+  type Dispatch,
   type ReactNode,
+  type SetStateAction,
 } from "react";
+import {
+  applyAlwaysOnTop,
+  readNativeAlwaysOnTop,
+} from "../../integrations/tauri/windowPrefs";
 import {
   DEFAULT_PREFERENCES,
   loadPreferences,
+  savePreferences,
   type PreferencesV1,
   type ThemePreference,
   type WindowBoundsPreference,
 } from "../../storage/preferencesStore";
-import { applyThemeToDocument, listenForSystemTheme } from "./themeUtils";
-import { useAlwaysOnTopPreference } from "./useAlwaysOnTopPreference";
-import { useDebouncedPreferencesSave } from "./useDebouncedPreferencesSave";
+
+const SAVE_DELAY_MS = 100;
+
+function applyThemeToDocument(theme: ThemePreference): void {
+  const root = document.documentElement;
+  if (theme === "system") {
+    root.removeAttribute("data-theme");
+    return;
+  }
+  root.setAttribute("data-theme", theme);
+}
+
+function listenForSystemTheme(onChange: () => void): () => void {
+  const media = window.matchMedia("(prefers-color-scheme: dark)");
+  media.addEventListener("change", onChange);
+  return () => media.removeEventListener("change", onChange);
+}
+
+function useDebouncedPreferencesSave(
+  setPreferences: Dispatch<SetStateAction<PreferencesV1>>,
+) {
+  const saveTimerRef = useRef<number | null>(null);
+
+  const scheduleSave = useCallback((next: PreferencesV1) => {
+    if (saveTimerRef.current !== null) {
+      window.clearTimeout(saveTimerRef.current);
+    }
+    saveTimerRef.current = window.setTimeout(() => {
+      savePreferences(next);
+      saveTimerRef.current = null;
+    }, SAVE_DELAY_MS);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (saveTimerRef.current !== null) {
+        window.clearTimeout(saveTimerRef.current);
+      }
+    };
+  }, []);
+
+  return useCallback(
+    (updater: (prev: PreferencesV1) => PreferencesV1) => {
+      setPreferences((prev) => {
+        const next = updater(prev);
+        scheduleSave(next);
+        return next;
+      });
+    },
+    [scheduleSave, setPreferences],
+  );
+}
+
+async function syncNativeAlwaysOnTop(desired: boolean): Promise<boolean> {
+  await applyAlwaysOnTop(desired);
+  const actual = await readNativeAlwaysOnTop();
+  return actual ?? desired;
+}
+
+function useAlwaysOnTopPreference({
+  setPreferences,
+  updatePreferences,
+}: {
+  setPreferences: Dispatch<SetStateAction<PreferencesV1>>;
+  updatePreferences: (updater: (prev: PreferencesV1) => PreferencesV1) => void;
+}) {
+  const [alwaysOnTopEnabled, setAlwaysOnTopEnabled] = useState(false);
+  const nativeRestoreRef = useRef(false);
+
+  const persistAlwaysOnTopPreference = useCallback(
+    (enabled: boolean) => {
+      updatePreferences((prev) => ({ ...prev, alwaysOnTop: enabled }));
+    },
+    [updatePreferences],
+  );
+
+  const clearPersistedAlwaysOnTop = useCallback(() => {
+    setPreferences((prev) => {
+      if (!prev.alwaysOnTop) {
+        return prev;
+      }
+      const next = { ...prev, alwaysOnTop: false };
+      savePreferences(next);
+      return next;
+    });
+  }, [setPreferences]);
+
+  useEffect(() => {
+    if (nativeRestoreRef.current) {
+      return;
+    }
+    nativeRestoreRef.current = true;
+
+    const desired = loadPreferences().alwaysOnTop;
+    void (async () => {
+      try {
+        const active = await syncNativeAlwaysOnTop(desired);
+        setAlwaysOnTopEnabled(active);
+        if (desired && !active) {
+          clearPersistedAlwaysOnTop();
+        }
+      } catch {
+        setAlwaysOnTopEnabled(false);
+        if (desired) {
+          clearPersistedAlwaysOnTop();
+        }
+      }
+    })();
+  }, [clearPersistedAlwaysOnTop]);
+
+  const setAlwaysOnTop = useCallback(
+    (enabled: boolean) => {
+      void (async () => {
+        try {
+          const active = await syncNativeAlwaysOnTop(enabled);
+          setAlwaysOnTopEnabled(active);
+          if (active === enabled) {
+            persistAlwaysOnTopPreference(enabled);
+          } else if (enabled) {
+            setAlwaysOnTopEnabled(false);
+          }
+        } catch {
+          const actual = await readNativeAlwaysOnTop();
+          setAlwaysOnTopEnabled(actual ?? false);
+        }
+      })();
+    },
+    [persistAlwaysOnTopPreference],
+  );
+
+  return { alwaysOnTopEnabled, setAlwaysOnTop };
+}
 
 type PreferencesContextValue = {
   preferences: PreferencesV1;

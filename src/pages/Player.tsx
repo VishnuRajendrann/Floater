@@ -1,18 +1,22 @@
 import { useEffect, useRef, type RefObject } from "react";
-import { useApp } from "../app/providers/AppProvider";
-import { useImmersiveVideoPointer } from "../features/player/hooks/useImmersiveVideoPointer";
-import { usePlayerKeyboardShortcuts } from "../features/player/hooks/usePlayerKeyboardShortcuts";
-import { usePlayerChromeVisibility } from "../features/player/hooks/usePlayerChromeVisibility";
-import { ControlBar } from "../features/player/components/ControlBar";
-import { AlwaysOnTopToggle } from "../features/preferences/AlwaysOnTopToggle";
-import { KeyboardHelp } from "../features/player/components/KeyboardHelp";
-import { PlayerChromeToggle } from "../features/player/components/PlayerChromeToggle";
-import { PlayerWindowDragBand } from "../features/player/components/PlayerWindowDragBand";
-import { PlayerErrorPanel } from "../features/player/components/PlayerErrorPanel";
-import { PlayerLoadingOverlay } from "../features/player/components/PlayerLoadingOverlay";
-import { YoutubePlayerHost } from "../features/player/components/YoutubePlayerHost";
+import { useApp } from "../app/AppShell";
+import { ControlBar } from "../features/player/ControlBar";
+import {
+  KeyboardHelp,
+  PlayerChromeToggle,
+  PlayerErrorPanel,
+  PlayerLoadingOverlay,
+  PlayerWindowDragBand,
+  YoutubePlayerHost,
+} from "../features/player/playerChrome";
+import {
+  useImmersiveVideoPointer,
+  usePlayerChromeVisibility,
+  usePlayerKeyboardShortcuts,
+} from "../features/player/playerHooks";
+import { AlwaysOnTopToggle } from "../features/preferences/PreferencesToggles";
 import { usePlayerDispatch, usePlayerMeta } from "../state/player/playerContext";
-import { cn } from "../shared/lib/cn";
+import { cn } from "../shared/ui";
 
 function useVideoAreaAspect(ref: RefObject<HTMLDivElement | null>) {
   useEffect(() => {

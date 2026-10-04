@@ -1,16 +1,218 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import { mapYoutubeErrorCode, YT_PLAYER_STATE } from "../../integrations/youtube/youtubeCore";
 import {
   loadIframeApi,
   resetIframeApiLoadState,
-} from "../../../integrations/youtube/loadIframeApi";
-import { YoutubePlayerAdapter } from "../../../integrations/youtube/YoutubePlayerAdapter";
-import { mapYoutubeErrorCode } from "../../../integrations/youtube/mapYoutubeErrorCode";
-import { createAppError } from "../../../types/errors";
-import { loadPreferences } from "../../../storage/preferencesStore";
-import { usePlayerDispatch, usePlayerMeta } from "../../../state/player/playerContext";
-import { usePlayerCommandsRef } from "../context/PlayerCommandsContext";
-import { usePreferences } from "../../../state/preferences/preferencesContext";
-import { YT_PLAYER_STATE } from "../../../integrations/youtube/types";
+  YoutubePlayerAdapter,
+} from "../../integrations/youtube/youtubeRuntime";
+import { createAppError } from "../../types/errors";
+import { loadPreferences } from "../../storage/preferencesStore";
+import {
+  usePlayerDispatch,
+  usePlayerMeta,
+  usePlayerProgress,
+} from "../../state/player/playerContext";
+import { usePlayerCommands, usePlayerCommandsRef } from "./PlayerCommandsContext";
+import { usePreferences } from "../../state/preferences/preferencesContext";
+import {
+  ensureWindowVisible,
+  setWindowDecorations,
+  startWindowDrag,
+} from "../../integrations/tauri/windowPrefs";
+import { isEditableTarget, runPlayerShortcut } from "../../keyboard/playerShortcuts";
+
+export function usePlayerChromeVisibility() {
+  const [controlsVisible, setControlsVisible] = useState(false);
+  const [revealerVisible, setRevealerVisible] = useState(false);
+
+  const applyDecorations = useCallback((visible: boolean) => {
+    void (async () => {
+      try {
+        if (!visible) {
+          await ensureWindowVisible();
+        }
+        await setWindowDecorations(visible);
+      } catch {
+        // Best-effort; browser dev has no native decorations.
+      }
+    })();
+  }, []);
+
+  useEffect(() => {
+    applyDecorations(false);
+    return () => {
+      void ensureWindowVisible();
+    };
+  }, [applyDecorations]);
+
+  const toggleControls = useCallback(() => {
+    setControlsVisible((prev) => {
+      const next = !prev;
+      applyDecorations(next);
+      return next;
+    });
+  }, [applyDecorations]);
+
+  const onShellPointerEnter = useCallback(() => {
+    setRevealerVisible(true);
+  }, []);
+
+  const onShellPointerLeave = useCallback(() => {
+    setRevealerVisible(false);
+  }, []);
+
+  const onRevealerPointerEnter = useCallback(() => {
+    setRevealerVisible(true);
+  }, []);
+
+  return {
+    controlsVisible,
+    revealerVisible,
+    toggleControls,
+    onShellPointerEnter,
+    onShellPointerLeave,
+    onRevealerPointerEnter,
+  };
+}
+
+type KeyboardShortcutOptions = {
+  enabled: boolean;
+  onActivity?: () => void;
+};
+
+export function usePlayerKeyboardShortcuts({
+  enabled,
+  onActivity,
+}: KeyboardShortcutOptions) {
+  const commands = usePlayerCommands();
+  const { ytState } = usePlayerMeta();
+  const { currentTime } = usePlayerProgress();
+  const ytStateRef = useRef(ytState);
+  const currentTimeRef = useRef(currentTime);
+
+  useEffect(() => {
+    ytStateRef.current = ytState;
+    currentTimeRef.current = currentTime;
+  }, [ytState, currentTime]);
+
+  useEffect(() => {
+    if (!enabled) {
+      return;
+    }
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (isEditableTarget(event.target)) {
+        return;
+      }
+      runPlayerShortcut(event, {
+        commands,
+        ytState: ytStateRef.current,
+        currentTime: currentTimeRef.current,
+        onActivity,
+      });
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [enabled, commands, onActivity]);
+}
+
+const DRAG_THRESHOLD_PX = 6;
+
+type ImmersivePointerOptions = {
+  enabled: boolean;
+};
+
+export function useImmersiveVideoPointer({ enabled }: ImmersivePointerOptions) {
+  const commands = usePlayerCommands();
+  const { ytState } = usePlayerMeta();
+  const gestureRef = useRef<{
+    pointerId: number;
+    startX: number;
+    startY: number;
+    dragging: boolean;
+  } | null>(null);
+
+  const onShieldPointerDown = useCallback(
+    (event: ReactPointerEvent<HTMLDivElement>) => {
+      if (!enabled || event.button !== 0) {
+        return;
+      }
+      event.stopPropagation();
+      gestureRef.current = {
+        pointerId: event.pointerId,
+        startX: event.clientX,
+        startY: event.clientY,
+        dragging: false,
+      };
+      event.currentTarget.setPointerCapture(event.pointerId);
+    },
+    [enabled],
+  );
+
+  const onShieldPointerMove = useCallback(
+    (event: ReactPointerEvent<HTMLDivElement>) => {
+      const gesture = gestureRef.current;
+      if (!enabled || !gesture || gesture.pointerId !== event.pointerId) {
+        return;
+      }
+      event.stopPropagation();
+      if (gesture.dragging) {
+        return;
+      }
+      const dx = event.clientX - gesture.startX;
+      const dy = event.clientY - gesture.startY;
+      if (dx * dx + dy * dy >= DRAG_THRESHOLD_PX * DRAG_THRESHOLD_PX) {
+        gesture.dragging = true;
+        void startWindowDrag().catch(() => {});
+      }
+    },
+    [enabled],
+  );
+
+  const finishGesture = useCallback(
+    (event: ReactPointerEvent<HTMLDivElement>) => {
+      const gesture = gestureRef.current;
+      if (!gesture || gesture.pointerId !== event.pointerId) {
+        return;
+      }
+      event.stopPropagation();
+      if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+        event.currentTarget.releasePointerCapture(event.pointerId);
+      }
+      if (!gesture.dragging && enabled) {
+        if (ytState === YT_PLAYER_STATE.PLAYING) {
+          commands.pause();
+        } else {
+          commands.play();
+        }
+      }
+      gestureRef.current = null;
+    },
+    [commands, enabled, ytState],
+  );
+
+  const onShieldPointerUp = useCallback(
+    (event: ReactPointerEvent<HTMLDivElement>) => {
+      finishGesture(event);
+    },
+    [finishGesture],
+  );
+
+  const onShieldPointerCancel = useCallback(
+    (event: ReactPointerEvent<HTMLDivElement>) => {
+      finishGesture(event);
+    },
+    [finishGesture],
+  );
+
+  return {
+    onShieldPointerDown,
+    onShieldPointerMove,
+    onShieldPointerUp,
+    onShieldPointerCancel,
+  };
+}
 
 const POLL_MS = 500;
 

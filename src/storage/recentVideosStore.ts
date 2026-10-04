@@ -1,4 +1,4 @@
-import { safeParseJson } from "./storageUtils";
+import { PREFERENCES_STORAGE_KEY, safeParseJson } from "./preferencesStore";
 
 export const RECENT_VIDEOS_STORAGE_KEY = "floater.recentVideos.v1";
 export const MAX_RECENT_VIDEOS = 20;
@@ -90,4 +90,13 @@ export function updateRecentVideoTitle(videoId: string, title: string): RecentVi
   );
   persist(items);
   return items;
+}
+
+/** Removes Floater preference and recent-video keys from local storage. */
+export function resetLocalData(): void {
+  if (typeof localStorage === "undefined") {
+    return;
+  }
+  localStorage.removeItem(PREFERENCES_STORAGE_KEY);
+  localStorage.removeItem(RECENT_VIDEOS_STORAGE_KEY);
 }
