@@ -1,7 +1,7 @@
 @import "tailwindcss";
-@source "../**/*.{tsx,ts}";
-
 @import "./tokens.css";
+
+@source "../**/*.{tsx,ts}";
 
 @theme inline {
   --color-bg: var(--color-bg);
@@ -71,12 +71,22 @@
 }
 
 @layer components {
+  .ui-filled {
+    @apply rounded-md border-0 bg-accent font-medium text-white hover:bg-accent-hover;
+  }
+
+  .ui-filled:focus-visible,
+  .player-control-btn:focus-visible {
+    outline: 2px solid white;
+    outline-offset: 2px;
+  }
+
   .player-control-btn {
-    @apply inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border-0 bg-transparent text-white/90 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-40;
+    @apply inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border-0 bg-accent text-white hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-40;
   }
 
   .player-control-btn-active {
-    @apply text-white ring-1 ring-accent;
+    @apply ring-2 ring-white;
   }
 
   .control-bar-range {
@@ -110,8 +120,94 @@
   height: calc(100% * min(1, var(--player-ar, 1.7777777778) / (16 / 9))) !important;
 }
 
+.trash-bin {
+  transform-origin: 50% 85%;
+}
+
+.trash-lid {
+  transform-box: view-box;
+  transform-origin: 6px 6px;
+  transition: transform 0.2s ease;
+}
+
+.trash-clear:hover .trash-lid,
+.trash-clear:focus-visible .trash-lid {
+  transform: translateY(-1px) rotate(-16deg);
+}
+
+.trash-bin-shake {
+  animation: trash-bin-shake 0.48s ease-in-out;
+}
+
+.trash-lid-open {
+  animation: trash-lid-open 0.48s ease-in-out;
+}
+
+.trash-list-out {
+  animation: trash-list-out 0.28s ease forwards;
+}
+
+@keyframes trash-bin-shake {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  18% {
+    transform: rotate(-16deg);
+  }
+  36% {
+    transform: rotate(13deg);
+  }
+  54% {
+    transform: rotate(-8deg);
+  }
+  72% {
+    transform: rotate(4deg);
+  }
+}
+
+@keyframes trash-lid-open {
+  0% {
+    transform: rotate(0deg);
+  }
+  40% {
+    transform: translateY(-2px) rotate(-32deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes trash-list-out {
+  to {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+}
+
+.float-bob {
+  animation: float-bob 2.2s ease-in-out infinite;
+}
+
+@keyframes float-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .player-header-transition {
     transition: none !important;
+  }
+
+  .trash-bin-shake,
+  .trash-lid-open,
+  .trash-list-out,
+  .float-bob {
+    animation: none !important;
   }
 }

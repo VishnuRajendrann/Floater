@@ -45,7 +45,7 @@ describe("AlwaysOnTopToggle", () => {
       </PreferencesProvider>,
     );
 
-    const button = screen.getByRole("button", { name: "Always on top" });
+    const button = screen.getByRole("button", { name: "Float" });
     await waitFor(() => {
       expect(button.getAttribute("aria-pressed")).toBe("false");
     });
@@ -55,7 +55,8 @@ describe("AlwaysOnTopToggle", () => {
     await waitFor(() => {
       expect(button.getAttribute("aria-pressed")).toBe("true");
     });
-    expect(button.textContent).toBe("Always on Top ✓");
+    expect(button.textContent).toBe("Float");
+    expect(button.querySelector("svg")).toBeNull();
     expect(applyAlwaysOnTop).toHaveBeenCalledWith(true);
   });
 });

@@ -69,7 +69,7 @@ export function PlayerErrorPanel({ onNewUrl }: Props) {
         {canRetry ? (
           <button
             type="button"
-            className="rounded-md border-0 bg-accent px-4 py-2 font-semibold text-white"
+            className="ui-filled px-4 py-2 font-semibold"
             onClick={handleRetry}
           >
             Retry
@@ -77,7 +77,7 @@ export function PlayerErrorPanel({ onNewUrl }: Props) {
         ) : null}
         <button
           type="button"
-          className="rounded-md border border-white/35 bg-transparent px-4 py-2 text-white"
+          className="ui-filled px-4 py-2"
           onClick={onNewUrl}
         >
           New URL

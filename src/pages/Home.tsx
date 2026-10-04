@@ -6,12 +6,38 @@ import { RecentVideosList } from "../features/home/RecentVideosList";
 import { UrlInputForm } from "../features/home/UrlInputForm";
 import { parseYoutubeUrl } from "../integrations/youtube/parseYoutubeUrl";
 import { parseFailureToAppError } from "../integrations/youtube/mapYoutubeErrorCode";
+import { cn } from "../shared/lib/cn";
+import { usePreferences } from "../state/preferences/preferencesContext";
 import { resetLocalData } from "../storage/resetLocalData";
 import type { AppError } from "../types/errors";
 
+function TrashIcon({ deleting }: { deleting: boolean }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={cn("trash-bin size-5", deleting && "trash-bin-shake")}
+      aria-hidden
+    >
+      <g className={cn("trash-lid", deleting && "trash-lid-open")}>
+        <path d="M3 6h18" />
+        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+      </g>
+      <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+      <path d="M10 11v6" />
+      <path d="M14 11v6" />
+    </svg>
+  );
+}
 export function Home() {
   const { loadVideo } = useApp();
+  const { alwaysOnTopEnabled } = usePreferences();
   const [error, setError] = useState<AppError | null>(null);
+  const [clearingCache, setClearingCache] = useState(false);
 
   const handleSubmit = (url: string) => {
     const result = parseYoutubeUrl(url);
@@ -23,22 +49,45 @@ export function Home() {
     loadVideo(result.videoId, url.trim());
   };
 
+  const handleClearCache = () => {
+    if (clearingCache) {
+      return;
+    }
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion) {
+      resetLocalData();
+      window.location.reload();
+      return;
+    }
+    setClearingCache(true);
+    window.setTimeout(() => {
+      resetLocalData();
+      window.location.reload();
+    }, 480);
+  };
+
   return (
-    <main className="box-border flex h-full flex-col items-center overflow-x-hidden overflow-y-auto p-[clamp(var(--space-sm),3vw,var(--space-xl))]">
-      <div className="my-auto box-border w-full min-w-0 max-w-lg shrink-0 overflow-x-hidden rounded-lg border border-border bg-surface p-[clamp(var(--space-md),4vw,var(--space-xl))] shadow-[0_12px_40px_rgb(0_0_0/0.25)]">
+    <main className="box-border flex h-full flex-col items-center overflow-x-hidden overflow-y-auto">
+      <div className="my-auto box-border w-full min-w-0 max-w-lg shrink-0 overflow-x-hidden rounded-lg border border-border bg-surface p-[var(--space-xl)] shadow-[0_12px_40px_rgb(0_0_0/0.25)]">
         <div className="mb-[var(--space-sm)] flex items-start justify-between gap-[var(--space-md)]">
-          <h1 className="m-0 text-[clamp(1.5rem,5vw,2rem)] font-bold tracking-tight">
-            Floater
+          <h1 className="m-2 text-[clamp(1.5rem,5vw,2rem)] font-bold tracking-tight">
+            Fl<span className="text-accent">o</span>ater
           </h1>
-          <div className="flex flex-wrap justify-end gap-[var(--space-sm)]">
+          <div className="relative top-[10px] flex flex-wrap items-center justify-end gap-[var(--space-sm)]">
+            <span>
+              <img
+                src={alwaysOnTopEnabled ? "/assets/oraora.gif" : "/assets/float-idle.png"}
+                alt=""
+                aria-hidden
+                className="pointer-events-none inline-block h-[60px] w-auto select-none align-middle"
+              />
+            </span>
             <AlwaysOnTopToggle />
             <ThemeToggle />
           </div>
         </div>
-        <p className="mb-[var(--space-lg)] text-[clamp(0.875rem,2.5vw,1rem)] leading-normal text-text-muted">
-          Paste a YouTube link for a focused desktop viewing experience.
-        </p>
         <form
+          className="mt-[var(--space-md)]"
           onSubmit={(event: FormEvent) => {
             event.preventDefault();
           }}
@@ -46,24 +95,13 @@ export function Home() {
           <UrlInputForm onSubmit={handleSubmit} error={error} />
         </form>
         <RecentVideosList />
-        <p className="mt-[var(--space-lg)] text-xs text-text-muted">
-          History and preferences stay on this device.
-        </p>
         <button
           type="button"
-          className="mt-[var(--space-sm)] border-0 bg-transparent text-xs text-text-muted underline"
-          onClick={() => {
-            if (
-              window.confirm(
-                "Reset preferences and recent videos stored on this device?",
-              )
-            ) {
-              resetLocalData();
-              window.location.reload();
-            }
-          }}
+          className="trash-clear ui-filled mt-[var(--space-lg)] inline-flex items-center gap-2 px-4 py-2 text-sm"
+          onClick={handleClearCache}
         >
-          Reset local data
+          <TrashIcon deleting={clearingCache} />
+          Clear cache
         </button>
       </div>
     </main>

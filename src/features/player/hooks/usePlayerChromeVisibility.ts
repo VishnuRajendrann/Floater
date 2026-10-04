@@ -1,24 +1,24 @@
 import { useCallback, useEffect, useState } from "react";
 import {
   ensureWindowVisible,
+  reapplyPlayerWindowSize,
   setWindowDecorations,
+  togglePlayerWindowSize,
 } from "../../../integrations/tauri/windowPrefs";
 
 export function usePlayerChromeVisibility() {
   const [controlsVisible, setControlsVisible] = useState(false);
   const [revealerVisible, setRevealerVisible] = useState(false);
 
-  const applyDecorations = useCallback((visible: boolean) => {
-    void (async () => {
-      try {
-        if (!visible) {
-          await ensureWindowVisible();
-        }
-        await setWindowDecorations(visible);
-      } catch {
-        // Best-effort; browser dev has no native decorations.
+  const applyDecorations = useCallback(async (visible: boolean) => {
+    try {
+      if (!visible) {
+        await ensureWindowVisible();
       }
-    })();
+      await setWindowDecorations(visible);
+    } catch {
+      // Best-effort; browser dev has no native decorations.
+    }
   }, []);
 
   useEffect(() => {
@@ -31,7 +31,11 @@ export function usePlayerChromeVisibility() {
   const toggleControls = useCallback(() => {
     setControlsVisible((prev) => {
       const next = !prev;
-      applyDecorations(next);
+      void (async () => {
+        await togglePlayerWindowSize();
+        await applyDecorations(next);
+        await reapplyPlayerWindowSize();
+      })();
       return next;
     });
   }, [applyDecorations]);

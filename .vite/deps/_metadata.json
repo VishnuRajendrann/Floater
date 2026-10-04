@@ -1,8 +1,70 @@
 {
-  "hash": "6ca656d0",
+  "hash": "d744fcdc",
   "configHash": "0c7e2724",
-  "lockfileHash": "6f40fb06",
-  "browserHash": "82c18e33",
-  "optimized": {},
-  "chunks": {}
+  "lockfileHash": "d7559b63",
+  "browserHash": "d0a75df5",
+  "optimized": {
+    "react/jsx-dev-runtime": {
+      "src": "../../node_modules/react/jsx-dev-runtime.js",
+      "file": "react_jsx-dev-runtime.js",
+      "fileHash": "b7d1a23f",
+      "needsInterop": true
+    },
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "87ecaa81",
+      "needsInterop": true
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "50552d75",
+      "needsInterop": true
+    },
+    "@tauri-apps/api/window": {
+      "src": "../../node_modules/@tauri-apps/api/window.js",
+      "file": "@tauri-apps_api_window.js",
+      "fileHash": "e8a1fbaa",
+      "needsInterop": false
+    },
+    "@tauri-apps/api/core": {
+      "src": "../../node_modules/@tauri-apps/api/core.js",
+      "file": "@tauri-apps_api_core.js",
+      "fileHash": "c6663123",
+      "needsInterop": false
+    },
+    "react-dom": {
+      "src": "../../node_modules/react-dom/index.js",
+      "file": "react-dom.js",
+      "fileHash": "24113a2f",
+      "needsInterop": true
+    },
+    "clsx": {
+      "src": "../../node_modules/clsx/dist/clsx.mjs",
+      "file": "clsx.js",
+      "fileHash": "5a3705a9",
+      "needsInterop": false
+    },
+    "tailwind-merge": {
+      "src": "../../node_modules/tailwind-merge/dist/bundle-mjs.mjs",
+      "file": "tailwind-merge.js",
+      "fileHash": "5dce1e2d",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-JOQVRHU3": {
+      "file": "chunk-JOQVRHU3.js"
+    },
+    "chunk-XE4PBFXX": {
+      "file": "chunk-XE4PBFXX.js"
+    },
+    "chunk-XWBJ6ZPK": {
+      "file": "chunk-XWBJ6ZPK.js"
+    },
+    "chunk-Q4AC2O6Z": {
+      "file": "chunk-Q4AC2O6Z.js"
+    }
+  }
 }

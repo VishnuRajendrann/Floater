@@ -33,7 +33,7 @@ export function KeyboardHelp() {
       <button
         ref={buttonRef}
         type="button"
-        className="border-0 bg-transparent px-[var(--space-sm)] py-[var(--space-xs)] text-sm text-accent"
+        className="ui-filled px-[var(--space-sm)] py-[var(--space-xs)] text-sm"
         aria-expanded={open}
         onClick={toggle}
       >
@@ -43,7 +43,7 @@ export function KeyboardHelp() {
         ? createPortal(
             <PopoverPanel
               className="fixed z-[80] min-w-56 rounded-md border border-border bg-surface-elevated p-[var(--space-md)] shadow-[0_8px_24px_rgb(0_0_0/0.35)]"
-              closeClassName="w-full rounded-md border-0 bg-surface px-1.5 py-1.5 text-text"
+              closeClassName="ui-filled w-full px-1.5 py-1.5"
               label="Keyboard shortcuts"
               onClose={close}
               style={{ top: anchor.top, right: anchor.right }}

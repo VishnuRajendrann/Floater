@@ -56,14 +56,14 @@ export function PlayerSettingsMenu({ disabled }: Props) {
       {open ? (
         <PopoverPanel
           className="absolute right-0 bottom-[calc(100%+var(--space-sm))] z-[12] w-[min(16rem,70vw)] rounded-md border border-white/10 bg-[rgb(18_18_22/0.96)] p-[var(--space-md)] text-white shadow-[0_8px_24px_rgb(0_0_0/0.45)]"
-          closeClassName="w-full rounded-md border-0 bg-white/10 px-[var(--space-xs)] py-[var(--space-xs)] text-inherit hover:bg-white/[0.14]"
+          closeClassName="ui-filled w-full px-[var(--space-xs)] py-[var(--space-xs)]"
           label="Playback settings"
           onClose={() => setOpen(false)}
         >
           <label className="mb-[var(--space-sm)] flex flex-col gap-[var(--space-xs)]">
             <span className="text-xs text-white/65">Speed</span>
             <select
-              className="w-full rounded-md border border-white/15 bg-black/35 px-[var(--space-sm)] py-[var(--space-xs)] text-inherit"
+              className="ui-filled w-full px-[var(--space-sm)] py-[var(--space-xs)]"
               value={String(playbackRate)}
               onChange={(event) => {
                 const rate = Number(event.target.value);
@@ -81,7 +81,7 @@ export function PlayerSettingsMenu({ disabled }: Props) {
           <label className="mb-[var(--space-sm)] flex flex-col gap-[var(--space-xs)]">
             <span className="text-xs text-white/65">Quality</span>
             <select
-              className="w-full rounded-md border border-white/15 bg-black/35 px-[var(--space-sm)] py-[var(--space-xs)] text-inherit"
+              className="ui-filled w-full px-[var(--space-sm)] py-[var(--space-xs)]"
               value={quality}
               onChange={(event) => {
                 const next = event.target.value;

@@ -41,7 +41,7 @@ export function UrlInputForm({ onSubmit, error }: Props) {
         />
         <button
           type="button"
-          className="shrink-0 rounded-md border-0 bg-accent px-4 py-2.5 font-semibold text-white hover:bg-accent-hover"
+          className="ui-filled shrink-0 px-4 py-2.5 font-semibold"
           onClick={submit}
         >
           Load

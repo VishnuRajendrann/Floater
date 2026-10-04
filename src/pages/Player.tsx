@@ -72,14 +72,14 @@ export function Player() {
           className="font-semibold tracking-tight"
           data-tauri-drag-region={chrome.controlsVisible ? true : undefined}
         >
-          Floater
+          Fl<span className="text-accent">o</span>ater
         </span>
         <div className="tauri-no-drag relative flex items-center gap-[var(--space-sm)]">
           <AlwaysOnTopToggle />
           <KeyboardHelp />
           <button
             type="button"
-            className="border-0 bg-transparent px-[var(--space-sm)] py-[var(--space-xs)] text-accent hover:text-accent-hover"
+            className="ui-filled px-[var(--space-sm)] py-[var(--space-xs)] text-sm"
             onClick={handleNewUrl}
           >
             New URL

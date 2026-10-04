@@ -18,6 +18,105 @@ import type { WindowBoundsPreference } from "../../storage/preferencesStore";
 
 const RESIZE_DEBOUNCE_MS = 500;
 
+/** Launch size from `tauri.conf.json`. The window opens at this size. */
+export const DEFAULT_WINDOW_WIDTH = 512;
+export const DEFAULT_WINDOW_HEIGHT = 382;
+
+type WindowSize = { width: number; height: number };
+
+const DEFAULT_WINDOW_SIZE: WindowSize = {
+  width: DEFAULT_WINDOW_WIDTH,
+  height: DEFAULT_WINDOW_HEIGHT,
+};
+
+/** Size the user dragged to while watching. Not updated by the toggle itself. */
+let desiredSize: WindowSize | null = null;
+let snappedToDefault = false;
+let applyingSize = false;
+
+async function readLogicalWindowSize(): Promise<WindowSize | null> {
+  if (!isTauri()) {
+    return null;
+  }
+  const appWindow = getCurrentWindow();
+  const size = await appWindow.innerSize();
+  const scale = await appWindow.scaleFactor();
+  return {
+    width: Math.round(size.width / scale),
+    height: Math.round(size.height / scale),
+  };
+}
+
+function rememberUserResize(size: WindowSize): void {
+  if (applyingSize || snappedToDefault) {
+    return;
+  }
+  desiredSize = size;
+}
+
+/** Called on real window resizes so the dragged size is kept before the toggle runs. */
+export function noteUserWindowResize(): void {
+  if (applyingSize || snappedToDefault || !isTauri()) {
+    return;
+  }
+  void readLogicalWindowSize().then((size) => {
+    if (size) {
+      rememberUserResize(size);
+    }
+  });
+}
+
+async function applyWindowSize(size: WindowSize): Promise<void> {
+  if (!isTauri()) {
+    return;
+  }
+  applyingSize = true;
+  try {
+    await getCurrentWindow().setSize(new LogicalSize(size.width, size.height));
+  } finally {
+    globalThis.setTimeout(() => {
+      applyingSize = false;
+    }, RESIZE_DEBOUNCE_MS + 200);
+  }
+}
+
+export async function applyDefaultWindowSize(): Promise<void> {
+  await applyWindowSize(DEFAULT_WINDOW_SIZE);
+}
+
+function targetWindowSize(): WindowSize {
+  if (snappedToDefault || !desiredSize) {
+    return DEFAULT_WINDOW_SIZE;
+  }
+  return desiredSize;
+}
+
+/** First press snaps to the default size. The next press restores the dragged size. */
+export async function togglePlayerWindowSize(): Promise<void> {
+  if (!isTauri()) {
+    return;
+  }
+  if (!snappedToDefault) {
+    const current = (await readLogicalWindowSize()) ?? desiredSize;
+    if (current) {
+      desiredSize = current;
+    }
+  }
+  snappedToDefault = !snappedToDefault || !desiredSize;
+  if (!desiredSize) {
+    snappedToDefault = true;
+  }
+  await applyWindowSize(targetWindowSize());
+}
+
+/** Re-apply after the title bar changes so that change cannot replace the target size. */
+export async function reapplyPlayerWindowSize(): Promise<void> {
+  if (!isTauri() || !desiredSize) {
+    return;
+  }
+  await applyWindowSize(targetWindowSize());
+}
+
 const MIN_ON_SCREEN_AREA = 80 * 80;
 
 
@@ -280,6 +379,20 @@ export async function startWindowDrag(): Promise<void> {
 
 
 
+export async function restoreWindowPosition(
+  bounds: WindowBoundsPreference | undefined,
+): Promise<void> {
+  if (
+    !isTauri() ||
+    !bounds ||
+    typeof bounds.x !== "number" ||
+    typeof bounds.y !== "number"
+  ) {
+    return;
+  }
+  await getCurrentWindow().setPosition(new LogicalPosition(bounds.x, bounds.y));
+}
+
 export async function restoreWindowBounds(
 
   bounds: WindowBoundsPreference | undefined,
@@ -389,6 +502,8 @@ export function watchWindowBounds(
 
 
   const unlistenPromise = appWindow.onResized(() => {
+
+    noteUserWindowResize();
 
     schedule();
 

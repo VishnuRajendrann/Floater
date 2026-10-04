@@ -27,7 +27,8 @@ describe("ThemeToggle", () => {
       </PreferencesProvider>,
     );
 
-    await user.selectOptions(screen.getByLabelText("Theme preference"), "dark");
+    await user.click(screen.getByRole("button", { name: "Switch to dark mode" }));
     expect(document.documentElement.getAttribute("data-theme")).toBe("dark");
+    expect(screen.getByRole("button", { name: "Switch to light mode" })).toBeTruthy();
   });
 });

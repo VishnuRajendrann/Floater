@@ -8,14 +8,15 @@ export function AlwaysOnTopToggle() {
     <button
       type="button"
       className={cn(
-        "rounded-md border border-border bg-surface px-2 py-1 text-sm whitespace-nowrap text-text-muted hover:text-text",
-        alwaysOnTopEnabled && "border-accent text-text",
+        "inline-flex items-center rounded-md border-2 border-accent px-3 py-1.5 text-sm font-medium whitespace-nowrap text-white transition-colors duration-300 ease-in-out motion-reduce:transition-none",
+        alwaysOnTopEnabled
+          ? "float-bob bg-accent hover:bg-accent-hover"
+          : "bg-transparent",
       )}
-      aria-label="Always on top"
       aria-pressed={alwaysOnTopEnabled}
       onClick={() => setAlwaysOnTop(!alwaysOnTopEnabled)}
     >
-      {alwaysOnTopEnabled ? "Always on Top ✓" : "Always on Top"}
+      Float
     </button>
   );
 }

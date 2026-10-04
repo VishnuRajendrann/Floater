@@ -20,7 +20,7 @@ export type AppError = {
 };
 
 export const USER_MESSAGES: Record<AppErrorCode, string> = {
-  EMPTY_INPUT: "Enter a YouTube URL.",
+  EMPTY_INPUT: "Enter a URL padawan.",
   INVALID_URL: "That doesn't look like a valid URL.",
   UNSUPPORTED_HOST: "Only YouTube links are supported.",
   MISSING_VIDEO_ID: "Couldn't find a video ID in that link.",

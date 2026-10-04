@@ -17,9 +17,9 @@ export function PlayerChromeToggle({
     <button
       type="button"
       className={cn(
-        "tauri-no-drag absolute top-[var(--space-sm)] right-[var(--space-sm)] z-30 flex h-9 w-9 items-center justify-center rounded-md border border-white/35 bg-black/55 p-0 text-white transition-[opacity,background] duration-200 ease-out hover:bg-black/75 motion-reduce:transition-none",
+        "ui-filled tauri-no-drag absolute top-[var(--space-sm)] right-[var(--space-sm)] z-30 flex h-9 w-9 items-center justify-center p-0 transition-[opacity,background] duration-200 ease-out motion-reduce:transition-none",
         visible ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0",
-        active && "border-accent bg-black/80",
+        active && "ring-2 ring-white",
       )}
       aria-label={
         active
